@@ -32,183 +32,106 @@ export const GetDashboardSummaryResponse = zod.object({
 
 
 /**
- * @summary List tasks
+ * @summary List planner items in a date range, optionally filtered by type
  */
-export const ListTasksQueryParams = zod.object({
-  "dueToday": zod.coerce.boolean().optional()
+export const ListPlannerItemsQueryParams = zod.object({
+  "from": zod.coerce.string().optional().describe('Inclusive start date (YYYY-MM-DD)'),
+  "to": zod.coerce.string().optional().describe('Inclusive end date (YYYY-MM-DD). Defaults to `from` when omitted.'),
+  "type": zod.enum(['homework', 'exam', 'event', 'study_block', 'note']).optional()
 })
 
-export const ListTasksResponseItem = zod.object({
+export const ListPlannerItemsResponseItem = zod.object({
   "id": zod.number(),
   "title": zod.string(),
-  "type": zod.enum(['homework', 'note']),
+  "type": zod.enum(['homework', 'exam', 'event', 'study_block', 'note']),
   "subject": zod.string().nullish(),
-  "dueDate": zod.string().nullish().describe('Calendar date YYYY-MM-DD'),
+  "date": zod.string().describe('Calendar date YYYY-MM-DD this item belongs to'),
+  "startTime": zod.string().nullish().describe('24h time HH:mm'),
+  "endTime": zod.string().nullish().describe('24h time HH:mm'),
+  "priority": zod.enum(['low', 'medium', 'high']),
   "completed": zod.boolean(),
-  "createdAt": zod.coerce.date()
-})
-export const ListTasksResponse = zod.array(ListTasksResponseItem)
-
-
-/**
- * @summary Create a task
- */
-
-
-
-export const CreateTaskBody = zod.object({
-  "title": zod.string().min(1),
-  "type": zod.enum(['homework', 'note']),
-  "subject": zod.string().optional(),
-  "dueDate": zod.string().optional().describe('Calendar date YYYY-MM-DD')
-})
-
-export const CreateTaskResponse = zod.object({
-  "id": zod.number(),
-  "title": zod.string(),
-  "type": zod.enum(['homework', 'note']),
-  "subject": zod.string().nullish(),
-  "dueDate": zod.string().nullish().describe('Calendar date YYYY-MM-DD'),
-  "completed": zod.boolean(),
-  "createdAt": zod.coerce.date()
-})
-
-
-/**
- * @summary Update a task (e.g. toggle completion)
- */
-export const UpdateTaskParams = zod.object({
-  "id": zod.coerce.number()
-})
-
-
-
-
-export const UpdateTaskBody = zod.object({
-  "title": zod.string().min(1).optional(),
-  "subject": zod.string().optional(),
-  "dueDate": zod.string().optional(),
-  "completed": zod.boolean().optional()
-})
-
-export const UpdateTaskResponse = zod.object({
-  "id": zod.number(),
-  "title": zod.string(),
-  "type": zod.enum(['homework', 'note']),
-  "subject": zod.string().nullish(),
-  "dueDate": zod.string().nullish().describe('Calendar date YYYY-MM-DD'),
-  "completed": zod.boolean(),
-  "createdAt": zod.coerce.date()
-})
-
-
-/**
- * @summary Delete a task
- */
-export const DeleteTaskParams = zod.object({
-  "id": zod.coerce.number()
-})
-
-export const DeleteTaskResponse = zod.void()
-
-
-/**
- * @summary List exams, soonest first
- */
-export const ListExamsQueryParams = zod.object({
-  "upcoming": zod.coerce.boolean().optional()
-})
-
-export const ListExamsResponseItem = zod.object({
-  "id": zod.number(),
-  "subject": zod.string(),
-  "examDate": zod.string().describe('Calendar date YYYY-MM-DD'),
   "notes": zod.string().nullish(),
   "createdAt": zod.coerce.date()
 })
-export const ListExamsResponse = zod.array(ListExamsResponseItem)
+export const ListPlannerItemsResponse = zod.array(ListPlannerItemsResponseItem)
 
 
 /**
- * @summary Create an exam
+ * @summary Create a planner item
  */
 
 
 
-export const CreateExamBody = zod.object({
-  "subject": zod.string().min(1),
-  "examDate": zod.string(),
+export const CreatePlannerItemBody = zod.object({
+  "title": zod.string().min(1),
+  "type": zod.enum(['homework', 'exam', 'event', 'study_block', 'note']),
+  "subject": zod.string().optional(),
+  "date": zod.string(),
+  "startTime": zod.string().optional(),
+  "endTime": zod.string().optional(),
+  "priority": zod.enum(['low', 'medium', 'high']).optional(),
   "notes": zod.string().optional()
 })
 
-export const CreateExamResponse = zod.object({
+export const CreatePlannerItemResponse = zod.object({
   "id": zod.number(),
-  "subject": zod.string(),
-  "examDate": zod.string().describe('Calendar date YYYY-MM-DD'),
+  "title": zod.string(),
+  "type": zod.enum(['homework', 'exam', 'event', 'study_block', 'note']),
+  "subject": zod.string().nullish(),
+  "date": zod.string().describe('Calendar date YYYY-MM-DD this item belongs to'),
+  "startTime": zod.string().nullish().describe('24h time HH:mm'),
+  "endTime": zod.string().nullish().describe('24h time HH:mm'),
+  "priority": zod.enum(['low', 'medium', 'high']),
+  "completed": zod.boolean(),
   "notes": zod.string().nullish(),
   "createdAt": zod.coerce.date()
 })
 
 
 /**
- * @summary Delete an exam
+ * @summary Update a planner item (edit fields or toggle completion)
  */
-export const DeleteExamParams = zod.object({
+export const UpdatePlannerItemParams = zod.object({
   "id": zod.coerce.number()
 })
 
-export const DeleteExamResponse = zod.void()
 
 
-/**
- * @summary List schedule events for a given date
- */
-export const ListScheduleEventsQueryParams = zod.object({
-  "date": zod.coerce.string().optional().describe('Calendar date (YYYY-MM-DD). Defaults to today.')
+
+export const UpdatePlannerItemBody = zod.object({
+  "title": zod.string().min(1).optional(),
+  "subject": zod.string().optional(),
+  "date": zod.string().optional(),
+  "startTime": zod.string().optional(),
+  "endTime": zod.string().optional(),
+  "priority": zod.enum(['low', 'medium', 'high']).optional(),
+  "completed": zod.boolean().optional(),
+  "notes": zod.string().optional()
 })
 
-export const ListScheduleEventsResponseItem = zod.object({
+export const UpdatePlannerItemResponse = zod.object({
   "id": zod.number(),
   "title": zod.string(),
-  "type": zod.enum(['homework', 'study_session', 'event', 'note']),
-  "date": zod.string().describe('Calendar date YYYY-MM-DD'),
-  "time": zod.string().describe('24h time HH:mm'),
-  "createdAt": zod.coerce.date()
-})
-export const ListScheduleEventsResponse = zod.array(ListScheduleEventsResponseItem)
-
-
-/**
- * @summary Create a schedule event
- */
-
-
-
-export const CreateScheduleEventBody = zod.object({
-  "title": zod.string().min(1),
-  "type": zod.enum(['homework', 'study_session', 'event', 'note']),
-  "date": zod.string(),
-  "time": zod.string()
-})
-
-export const CreateScheduleEventResponse = zod.object({
-  "id": zod.number(),
-  "title": zod.string(),
-  "type": zod.enum(['homework', 'study_session', 'event', 'note']),
-  "date": zod.string().describe('Calendar date YYYY-MM-DD'),
-  "time": zod.string().describe('24h time HH:mm'),
+  "type": zod.enum(['homework', 'exam', 'event', 'study_block', 'note']),
+  "subject": zod.string().nullish(),
+  "date": zod.string().describe('Calendar date YYYY-MM-DD this item belongs to'),
+  "startTime": zod.string().nullish().describe('24h time HH:mm'),
+  "endTime": zod.string().nullish().describe('24h time HH:mm'),
+  "priority": zod.enum(['low', 'medium', 'high']),
+  "completed": zod.boolean(),
+  "notes": zod.string().nullish(),
   "createdAt": zod.coerce.date()
 })
 
 
 /**
- * @summary Delete a schedule event
+ * @summary Delete a planner item
  */
-export const DeleteScheduleEventParams = zod.object({
+export const DeletePlannerItemParams = zod.object({
   "id": zod.coerce.number()
 })
 
-export const DeleteScheduleEventResponse = zod.void()
+export const DeletePlannerItemResponse = zod.void()
 
 
 /**

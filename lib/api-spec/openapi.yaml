@@ -12,12 +12,8 @@ tags:
     description: Health operations
   - name: dashboard
     description: Home dashboard aggregate data
-  - name: tasks
-    description: Homework and note items
-  - name: exams
-    description: Upcoming exams
-  - name: schedule
-    description: Scheduled events for a given day
+  - name: planner-items
+    description: Unified planner items (homework, exams, events, study blocks, notes)
   - name: study-sessions
     description: Logged focus/study sessions
   - name: quotes
@@ -50,179 +46,84 @@ paths:
               schema:
                 $ref: "#/components/schemas/DashboardSummary"
 
-  /tasks:
+  /planner-items:
     get:
-      operationId: listTasks
-      tags: [tasks]
-      summary: List tasks
+      operationId: listPlannerItems
+      tags: [planner-items]
+      summary: List planner items in a date range, optionally filtered by type
       parameters:
-        - name: dueToday
+        - name: from
           in: query
           required: false
-          schema:
-            type: boolean
-      responses:
-        "200":
-          description: List of tasks
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Task"
-    post:
-      operationId: createTask
-      tags: [tasks]
-      summary: Create a task
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/TaskInput"
-      responses:
-        "201":
-          description: Created task
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Task"
-
-  /tasks/{id}:
-    patch:
-      operationId: updateTask
-      tags: [tasks]
-      summary: Update a task (e.g. toggle completion)
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/TaskUpdate"
-      responses:
-        "200":
-          description: Updated task
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Task"
-    delete:
-      operationId: deleteTask
-      tags: [tasks]
-      summary: Delete a task
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        "204":
-          description: Deleted
-
-  /exams:
-    get:
-      operationId: listExams
-      tags: [exams]
-      summary: List exams, soonest first
-      parameters:
-        - name: upcoming
-          in: query
-          required: false
-          schema:
-            type: boolean
-      responses:
-        "200":
-          description: List of exams
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Exam"
-    post:
-      operationId: createExam
-      tags: [exams]
-      summary: Create an exam
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ExamInput"
-      responses:
-        "201":
-          description: Created exam
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Exam"
-
-  /exams/{id}:
-    delete:
-      operationId: deleteExam
-      tags: [exams]
-      summary: Delete an exam
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        "204":
-          description: Deleted
-
-  /schedule:
-    get:
-      operationId: listScheduleEvents
-      tags: [schedule]
-      summary: List schedule events for a given date
-      parameters:
-        - name: date
-          in: query
-          required: false
-          description: "Calendar date (YYYY-MM-DD). Defaults to today."
+          description: "Inclusive start date (YYYY-MM-DD)"
           schema:
             type: string
+        - name: to
+          in: query
+          required: false
+          description: "Inclusive end date (YYYY-MM-DD). Defaults to `from` when omitted."
+          schema:
+            type: string
+        - name: type
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/PlannerItemType"
       responses:
         "200":
-          description: List of schedule events, ordered by time
+          description: List of planner items, ordered by date then start time
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ScheduleEvent"
+                  $ref: "#/components/schemas/PlannerItem"
     post:
-      operationId: createScheduleEvent
-      tags: [schedule]
-      summary: Create a schedule event
+      operationId: createPlannerItem
+      tags: [planner-items]
+      summary: Create a planner item
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ScheduleEventInput"
+              $ref: "#/components/schemas/PlannerItemInput"
       responses:
         "201":
-          description: Created schedule event
+          description: Created planner item
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ScheduleEvent"
+                $ref: "#/components/schemas/PlannerItem"
 
-  /schedule/{id}:
+  /planner-items/{id}:
+    patch:
+      operationId: updatePlannerItem
+      tags: [planner-items]
+      summary: Update a planner item (edit fields or toggle completion)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlannerItemUpdate"
+      responses:
+        "200":
+          description: Updated planner item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlannerItem"
     delete:
-      operationId: deleteScheduleEvent
-      tags: [schedule]
-      summary: Delete a schedule event
+      operationId: deletePlannerItem
+      tags: [planner-items]
+      summary: Delete a planner item
       parameters:
         - name: id
           in: path
@@ -301,12 +202,22 @@ components:
         bloomProgressLabel:
           type: string
 
-    Task:
+    PlannerItemType:
+      type: string
+      enum: [homework, exam, event, study_block, note]
+
+    PlannerItemPriority:
+      type: string
+      enum: [low, medium, high]
+
+    PlannerItem:
       type: object
       required:
         - id
         - title
         - type
+        - date
+        - priority
         - completed
         - createdAt
       properties:
@@ -315,129 +226,72 @@ components:
         title:
           type: string
         type:
-          type: string
-          enum: [homework, note]
+          $ref: "#/components/schemas/PlannerItemType"
         subject:
           type: ["string", "null"]
-        dueDate:
-          type: ["string", "null"]
-          description: "Calendar date YYYY-MM-DD"
-        completed:
-          type: boolean
-        createdAt:
-          type: string
-          format: date-time
-
-    TaskInput:
-      type: object
-      required:
-        - title
-        - type
-      properties:
-        title:
-          type: string
-          minLength: 1
-        type:
-          type: string
-          enum: [homework, note]
-        subject:
-          type: string
-        dueDate:
-          type: string
-          description: "Calendar date YYYY-MM-DD"
-
-    TaskUpdate:
-      type: object
-      properties:
-        title:
-          type: string
-          minLength: 1
-        subject:
-          type: string
-        dueDate:
-          type: string
-        completed:
-          type: boolean
-
-    Exam:
-      type: object
-      required:
-        - id
-        - subject
-        - examDate
-        - createdAt
-      properties:
-        id:
-          type: integer
-        subject:
-          type: string
-        examDate:
-          type: string
-          description: "Calendar date YYYY-MM-DD"
-        notes:
-          type: ["string", "null"]
-        createdAt:
-          type: string
-          format: date-time
-
-    ExamInput:
-      type: object
-      required:
-        - subject
-        - examDate
-      properties:
-        subject:
-          type: string
-          minLength: 1
-        examDate:
-          type: string
-        notes:
-          type: string
-
-    ScheduleEvent:
-      type: object
-      required:
-        - id
-        - title
-        - type
-        - date
-        - time
-        - createdAt
-      properties:
-        id:
-          type: integer
-        title:
-          type: string
-        type:
-          type: string
-          enum: [homework, study_session, event, note]
         date:
           type: string
-          description: "Calendar date YYYY-MM-DD"
-        time:
-          type: string
+          description: "Calendar date YYYY-MM-DD this item belongs to"
+        startTime:
+          type: ["string", "null"]
           description: "24h time HH:mm"
+        endTime:
+          type: ["string", "null"]
+          description: "24h time HH:mm"
+        priority:
+          $ref: "#/components/schemas/PlannerItemPriority"
+        completed:
+          type: boolean
+        notes:
+          type: ["string", "null"]
         createdAt:
           type: string
           format: date-time
 
-    ScheduleEventInput:
+    PlannerItemInput:
       type: object
       required:
         - title
         - type
         - date
-        - time
       properties:
         title:
           type: string
           minLength: 1
         type:
+          $ref: "#/components/schemas/PlannerItemType"
+        subject:
           type: string
-          enum: [homework, study_session, event, note]
         date:
           type: string
-        time:
+        startTime:
+          type: string
+        endTime:
+          type: string
+        priority:
+          $ref: "#/components/schemas/PlannerItemPriority"
+        notes:
+          type: string
+
+    PlannerItemUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+        subject:
+          type: string
+        date:
+          type: string
+        startTime:
+          type: string
+        endTime:
+          type: string
+        priority:
+          $ref: "#/components/schemas/PlannerItemPriority"
+        completed:
+          type: boolean
+        notes:
           type: string
 
     StudySession:

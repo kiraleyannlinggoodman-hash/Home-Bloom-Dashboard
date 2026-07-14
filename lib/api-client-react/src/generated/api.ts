@@ -21,20 +21,14 @@ import type {
 
 import type {
   DashboardSummary,
-  Exam,
-  ExamInput,
   HealthStatus,
-  ListExamsParams,
-  ListScheduleEventsParams,
-  ListTasksParams,
+  ListPlannerItemsParams,
+  PlannerItem,
+  PlannerItemInput,
+  PlannerItemUpdate,
   Quote,
-  ScheduleEvent,
-  ScheduleEventInput,
   StudySession,
-  StudySessionInput,
-  Task,
-  TaskInput,
-  TaskUpdate
+  StudySessionInput
 } from './api.schemas';
 
 import { customFetch } from '../custom-fetch';
@@ -219,7 +213,7 @@ export function useGetDashboardSummary<TData = Awaited<ReturnType<typeof getDash
 
 
 
-export const getListTasksUrl = (params?: ListTasksParams,) => {
+export const getListPlannerItemsUrl = (params?: ListPlannerItemsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -231,15 +225,15 @@ export const getListTasksUrl = (params?: ListTasksParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/api/tasks?${stringifiedParams}` : `/api/tasks`
+  return stringifiedParams.length > 0 ? `/api/planner-items?${stringifiedParams}` : `/api/planner-items`
 }
 
 /**
- * @summary List tasks
+ * @summary List planner items in a date range, optionally filtered by type
  */
-export const listTasks = async (params?: ListTasksParams, options?: RequestInit): Promise<Task[]> => {
+export const listPlannerItems = async (params?: ListPlannerItemsParams, options?: RequestInit): Promise<PlannerItem[]> => {
 
-  return customFetch<Task[]>(getListTasksUrl(params),
+  return customFetch<PlannerItem[]>(getListPlannerItemsUrl(params),
   {
     ...options,
     method: 'GET'
@@ -252,45 +246,45 @@ export const listTasks = async (params?: ListTasksParams, options?: RequestInit)
 
 
 
-export const getListTasksQueryKey = (params?: ListTasksParams,) => {
+export const getListPlannerItemsQueryKey = (params?: ListPlannerItemsParams,) => {
     return [
-    `/api/tasks`, ...(params ? [params] : [])
+    `/api/planner-items`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getListTasksQueryOptions = <TData = Awaited<ReturnType<typeof listTasks>>, TError = ErrorType<unknown>>(params?: ListTasksParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listTasks>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+export const getListPlannerItemsQueryOptions = <TData = Awaited<ReturnType<typeof listPlannerItems>>, TError = ErrorType<unknown>>(params?: ListPlannerItemsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listPlannerItems>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getListTasksQueryKey(params);
+  const queryKey =  queryOptions?.queryKey ?? getListPlannerItemsQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof listTasks>>> = ({ signal }) => listTasks(params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listPlannerItems>>> = ({ signal }) => listPlannerItems(params, { signal, ...requestOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listTasks>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listPlannerItems>>, TError, TData> & { queryKey: QueryKey }
 }
 
-export type ListTasksQueryResult = NonNullable<Awaited<ReturnType<typeof listTasks>>>
-export type ListTasksQueryError = ErrorType<unknown>
+export type ListPlannerItemsQueryResult = NonNullable<Awaited<ReturnType<typeof listPlannerItems>>>
+export type ListPlannerItemsQueryError = ErrorType<unknown>
 
 
 /**
- * @summary List tasks
+ * @summary List planner items in a date range, optionally filtered by type
  */
 
-export function useListTasks<TData = Awaited<ReturnType<typeof listTasks>>, TError = ErrorType<unknown>>(
- params?: ListTasksParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listTasks>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+export function useListPlannerItems<TData = Awaited<ReturnType<typeof listPlannerItems>>, TError = ErrorType<unknown>>(
+ params?: ListPlannerItemsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listPlannerItems>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  const queryOptions = getListTasksQueryOptions(params,options)
+  const queryOptions = getListPlannerItemsQueryOptions(params,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -303,25 +297,25 @@ export function useListTasks<TData = Awaited<ReturnType<typeof listTasks>>, TErr
 
 
 
-export const getCreateTaskUrl = () => {
+export const getCreatePlannerItemUrl = () => {
 
 
 
 
-  return `/api/tasks`
+  return `/api/planner-items`
 }
 
 /**
- * @summary Create a task
+ * @summary Create a planner item
  */
-export const createTask = async (taskInput: TaskInput, options?: RequestInit): Promise<Task> => {
+export const createPlannerItem = async (plannerItemInput: PlannerItemInput, options?: RequestInit): Promise<PlannerItem> => {
 
-  return customFetch<Task>(getCreateTaskUrl(),
+  return customFetch<PlannerItem>(getCreatePlannerItemUrl(),
   {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(taskInput)
+    body: JSON.stringify(plannerItemInput)
   }
 );}
 
@@ -329,11 +323,11 @@ export const createTask = async (taskInput: TaskInput, options?: RequestInit): P
 
 
 
-export const getCreateTaskMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTask>>, TError,{data: BodyType<TaskInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof createTask>>, TError,{data: BodyType<TaskInput>}, TContext> => {
+export const getCreatePlannerItemMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createPlannerItem>>, TError,{data: BodyType<PlannerItemInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createPlannerItem>>, TError,{data: BodyType<PlannerItemInput>}, TContext> => {
 
-const mutationKey = ['createTask'];
+const mutationKey = ['createPlannerItem'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -343,10 +337,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createTask>>, {data: BodyType<TaskInput>}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createPlannerItem>>, {data: BodyType<PlannerItemInput>}> = (props) => {
           const {data} = props ?? {};
 
-          return  createTask(data,requestOptions)
+          return  createPlannerItem(data,requestOptions)
         }
 
 
@@ -356,44 +350,44 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type CreateTaskMutationResult = NonNullable<Awaited<ReturnType<typeof createTask>>>
-    export type CreateTaskMutationBody = BodyType<TaskInput>
-    export type CreateTaskMutationError = ErrorType<unknown>
+    export type CreatePlannerItemMutationResult = NonNullable<Awaited<ReturnType<typeof createPlannerItem>>>
+    export type CreatePlannerItemMutationBody = BodyType<PlannerItemInput>
+    export type CreatePlannerItemMutationError = ErrorType<unknown>
 
     /**
- * @summary Create a task
+ * @summary Create a planner item
  */
-export const useCreateTask = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTask>>, TError,{data: BodyType<TaskInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+export const useCreatePlannerItem = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createPlannerItem>>, TError,{data: BodyType<PlannerItemInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
  ): UseMutationResult<
-        Awaited<ReturnType<typeof createTask>>,
+        Awaited<ReturnType<typeof createPlannerItem>>,
         TError,
-        {data: BodyType<TaskInput>},
+        {data: BodyType<PlannerItemInput>},
         TContext
       > => {
-      return useMutation(getCreateTaskMutationOptions(options));
+      return useMutation(getCreatePlannerItemMutationOptions(options));
     }
 
-export const getUpdateTaskUrl = (id: number,) => {
+export const getUpdatePlannerItemUrl = (id: number,) => {
 
 
 
 
-  return `/api/tasks/${id}`
+  return `/api/planner-items/${id}`
 }
 
 /**
- * @summary Update a task (e.g. toggle completion)
+ * @summary Update a planner item (edit fields or toggle completion)
  */
-export const updateTask = async (id: number,
-    taskUpdate: TaskUpdate, options?: RequestInit): Promise<Task> => {
+export const updatePlannerItem = async (id: number,
+    plannerItemUpdate: PlannerItemUpdate, options?: RequestInit): Promise<PlannerItem> => {
 
-  return customFetch<Task>(getUpdateTaskUrl(id),
+  return customFetch<PlannerItem>(getUpdatePlannerItemUrl(id),
   {
     ...options,
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(taskUpdate)
+    body: JSON.stringify(plannerItemUpdate)
   }
 );}
 
@@ -401,11 +395,11 @@ export const updateTask = async (id: number,
 
 
 
-export const getUpdateTaskMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTask>>, TError,{id: number;data: BodyType<TaskUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof updateTask>>, TError,{id: number;data: BodyType<TaskUpdate>}, TContext> => {
+export const getUpdatePlannerItemMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePlannerItem>>, TError,{id: number;data: BodyType<PlannerItemUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updatePlannerItem>>, TError,{id: number;data: BodyType<PlannerItemUpdate>}, TContext> => {
 
-const mutationKey = ['updateTask'];
+const mutationKey = ['updatePlannerItem'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -415,10 +409,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateTask>>, {id: number;data: BodyType<TaskUpdate>}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updatePlannerItem>>, {id: number;data: BodyType<PlannerItemUpdate>}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  updateTask(id,data,requestOptions)
+          return  updatePlannerItem(id,data,requestOptions)
         }
 
 
@@ -428,38 +422,38 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type UpdateTaskMutationResult = NonNullable<Awaited<ReturnType<typeof updateTask>>>
-    export type UpdateTaskMutationBody = BodyType<TaskUpdate>
-    export type UpdateTaskMutationError = ErrorType<unknown>
+    export type UpdatePlannerItemMutationResult = NonNullable<Awaited<ReturnType<typeof updatePlannerItem>>>
+    export type UpdatePlannerItemMutationBody = BodyType<PlannerItemUpdate>
+    export type UpdatePlannerItemMutationError = ErrorType<unknown>
 
     /**
- * @summary Update a task (e.g. toggle completion)
+ * @summary Update a planner item (edit fields or toggle completion)
  */
-export const useUpdateTask = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTask>>, TError,{id: number;data: BodyType<TaskUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+export const useUpdatePlannerItem = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePlannerItem>>, TError,{id: number;data: BodyType<PlannerItemUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
  ): UseMutationResult<
-        Awaited<ReturnType<typeof updateTask>>,
+        Awaited<ReturnType<typeof updatePlannerItem>>,
         TError,
-        {id: number;data: BodyType<TaskUpdate>},
+        {id: number;data: BodyType<PlannerItemUpdate>},
         TContext
       > => {
-      return useMutation(getUpdateTaskMutationOptions(options));
+      return useMutation(getUpdatePlannerItemMutationOptions(options));
     }
 
-export const getDeleteTaskUrl = (id: number,) => {
+export const getDeletePlannerItemUrl = (id: number,) => {
 
 
 
 
-  return `/api/tasks/${id}`
+  return `/api/planner-items/${id}`
 }
 
 /**
- * @summary Delete a task
+ * @summary Delete a planner item
  */
-export const deleteTask = async (id: number, options?: RequestInit): Promise<void> => {
+export const deletePlannerItem = async (id: number, options?: RequestInit): Promise<void> => {
 
-  return customFetch<void>(getDeleteTaskUrl(id),
+  return customFetch<void>(getDeletePlannerItemUrl(id),
   {
     ...options,
     method: 'DELETE'
@@ -472,11 +466,11 @@ export const deleteTask = async (id: number, options?: RequestInit): Promise<voi
 
 
 
-export const getDeleteTaskMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTask>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteTask>>, TError,{id: number}, TContext> => {
+export const getDeletePlannerItemMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deletePlannerItem>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deletePlannerItem>>, TError,{id: number}, TContext> => {
 
-const mutationKey = ['deleteTask'];
+const mutationKey = ['deletePlannerItem'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -486,10 +480,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteTask>>, {id: number}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deletePlannerItem>>, {id: number}> = (props) => {
           const {id} = props ?? {};
 
-          return  deleteTask(id,requestOptions)
+          return  deletePlannerItem(id,requestOptions)
         }
 
 
@@ -499,474 +493,22 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type DeleteTaskMutationResult = NonNullable<Awaited<ReturnType<typeof deleteTask>>>
+    export type DeletePlannerItemMutationResult = NonNullable<Awaited<ReturnType<typeof deletePlannerItem>>>
 
-    export type DeleteTaskMutationError = ErrorType<unknown>
+    export type DeletePlannerItemMutationError = ErrorType<unknown>
 
     /**
- * @summary Delete a task
+ * @summary Delete a planner item
  */
-export const useDeleteTask = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTask>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+export const useDeletePlannerItem = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deletePlannerItem>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
  ): UseMutationResult<
-        Awaited<ReturnType<typeof deleteTask>>,
+        Awaited<ReturnType<typeof deletePlannerItem>>,
         TError,
         {id: number},
         TContext
       > => {
-      return useMutation(getDeleteTaskMutationOptions(options));
-    }
-
-export const getListExamsUrl = (params?: ListExamsParams,) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : String(value))
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/api/exams?${stringifiedParams}` : `/api/exams`
-}
-
-/**
- * @summary List exams, soonest first
- */
-export const listExams = async (params?: ListExamsParams, options?: RequestInit): Promise<Exam[]> => {
-
-  return customFetch<Exam[]>(getListExamsUrl(params),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getListExamsQueryKey = (params?: ListExamsParams,) => {
-    return [
-    `/api/exams`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-
-export const getListExamsQueryOptions = <TData = Awaited<ReturnType<typeof listExams>>, TError = ErrorType<unknown>>(params?: ListExamsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listExams>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getListExamsQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof listExams>>> = ({ signal }) => listExams(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listExams>>, TError, TData> & { queryKey: QueryKey }
-}
-
-export type ListExamsQueryResult = NonNullable<Awaited<ReturnType<typeof listExams>>>
-export type ListExamsQueryError = ErrorType<unknown>
-
-
-/**
- * @summary List exams, soonest first
- */
-
-export function useListExams<TData = Awaited<ReturnType<typeof listExams>>, TError = ErrorType<unknown>>(
- params?: ListExamsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listExams>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
-
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-
-  const queryOptions = getListExamsQueryOptions(params,options)
-
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
-
-
-
-
-
-
-
-export const getCreateExamUrl = () => {
-
-
-
-
-  return `/api/exams`
-}
-
-/**
- * @summary Create an exam
- */
-export const createExam = async (examInput: ExamInput, options?: RequestInit): Promise<Exam> => {
-
-  return customFetch<Exam>(getCreateExamUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(examInput)
-  }
-);}
-
-
-
-
-
-export const getCreateExamMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createExam>>, TError,{data: BodyType<ExamInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof createExam>>, TError,{data: BodyType<ExamInput>}, TContext> => {
-
-const mutationKey = ['createExam'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createExam>>, {data: BodyType<ExamInput>}> = (props) => {
-          const {data} = props ?? {};
-
-          return  createExam(data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CreateExamMutationResult = NonNullable<Awaited<ReturnType<typeof createExam>>>
-    export type CreateExamMutationBody = BodyType<ExamInput>
-    export type CreateExamMutationError = ErrorType<unknown>
-
-    /**
- * @summary Create an exam
- */
-export const useCreateExam = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createExam>>, TError,{data: BodyType<ExamInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
- ): UseMutationResult<
-        Awaited<ReturnType<typeof createExam>>,
-        TError,
-        {data: BodyType<ExamInput>},
-        TContext
-      > => {
-      return useMutation(getCreateExamMutationOptions(options));
-    }
-
-export const getDeleteExamUrl = (id: number,) => {
-
-
-
-
-  return `/api/exams/${id}`
-}
-
-/**
- * @summary Delete an exam
- */
-export const deleteExam = async (id: number, options?: RequestInit): Promise<void> => {
-
-  return customFetch<void>(getDeleteExamUrl(id),
-  {
-    ...options,
-    method: 'DELETE'
-
-
-  }
-);}
-
-
-
-
-
-export const getDeleteExamMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteExam>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteExam>>, TError,{id: number}, TContext> => {
-
-const mutationKey = ['deleteExam'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteExam>>, {id: number}> = (props) => {
-          const {id} = props ?? {};
-
-          return  deleteExam(id,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeleteExamMutationResult = NonNullable<Awaited<ReturnType<typeof deleteExam>>>
-
-    export type DeleteExamMutationError = ErrorType<unknown>
-
-    /**
- * @summary Delete an exam
- */
-export const useDeleteExam = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteExam>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
- ): UseMutationResult<
-        Awaited<ReturnType<typeof deleteExam>>,
-        TError,
-        {id: number},
-        TContext
-      > => {
-      return useMutation(getDeleteExamMutationOptions(options));
-    }
-
-export const getListScheduleEventsUrl = (params?: ListScheduleEventsParams,) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : String(value))
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/api/schedule?${stringifiedParams}` : `/api/schedule`
-}
-
-/**
- * @summary List schedule events for a given date
- */
-export const listScheduleEvents = async (params?: ListScheduleEventsParams, options?: RequestInit): Promise<ScheduleEvent[]> => {
-
-  return customFetch<ScheduleEvent[]>(getListScheduleEventsUrl(params),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getListScheduleEventsQueryKey = (params?: ListScheduleEventsParams,) => {
-    return [
-    `/api/schedule`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-
-export const getListScheduleEventsQueryOptions = <TData = Awaited<ReturnType<typeof listScheduleEvents>>, TError = ErrorType<unknown>>(params?: ListScheduleEventsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listScheduleEvents>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getListScheduleEventsQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof listScheduleEvents>>> = ({ signal }) => listScheduleEvents(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listScheduleEvents>>, TError, TData> & { queryKey: QueryKey }
-}
-
-export type ListScheduleEventsQueryResult = NonNullable<Awaited<ReturnType<typeof listScheduleEvents>>>
-export type ListScheduleEventsQueryError = ErrorType<unknown>
-
-
-/**
- * @summary List schedule events for a given date
- */
-
-export function useListScheduleEvents<TData = Awaited<ReturnType<typeof listScheduleEvents>>, TError = ErrorType<unknown>>(
- params?: ListScheduleEventsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listScheduleEvents>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
-
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-
-  const queryOptions = getListScheduleEventsQueryOptions(params,options)
-
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
-
-
-
-
-
-
-
-export const getCreateScheduleEventUrl = () => {
-
-
-
-
-  return `/api/schedule`
-}
-
-/**
- * @summary Create a schedule event
- */
-export const createScheduleEvent = async (scheduleEventInput: ScheduleEventInput, options?: RequestInit): Promise<ScheduleEvent> => {
-
-  return customFetch<ScheduleEvent>(getCreateScheduleEventUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(scheduleEventInput)
-  }
-);}
-
-
-
-
-
-export const getCreateScheduleEventMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createScheduleEvent>>, TError,{data: BodyType<ScheduleEventInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof createScheduleEvent>>, TError,{data: BodyType<ScheduleEventInput>}, TContext> => {
-
-const mutationKey = ['createScheduleEvent'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createScheduleEvent>>, {data: BodyType<ScheduleEventInput>}> = (props) => {
-          const {data} = props ?? {};
-
-          return  createScheduleEvent(data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CreateScheduleEventMutationResult = NonNullable<Awaited<ReturnType<typeof createScheduleEvent>>>
-    export type CreateScheduleEventMutationBody = BodyType<ScheduleEventInput>
-    export type CreateScheduleEventMutationError = ErrorType<unknown>
-
-    /**
- * @summary Create a schedule event
- */
-export const useCreateScheduleEvent = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createScheduleEvent>>, TError,{data: BodyType<ScheduleEventInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
- ): UseMutationResult<
-        Awaited<ReturnType<typeof createScheduleEvent>>,
-        TError,
-        {data: BodyType<ScheduleEventInput>},
-        TContext
-      > => {
-      return useMutation(getCreateScheduleEventMutationOptions(options));
-    }
-
-export const getDeleteScheduleEventUrl = (id: number,) => {
-
-
-
-
-  return `/api/schedule/${id}`
-}
-
-/**
- * @summary Delete a schedule event
- */
-export const deleteScheduleEvent = async (id: number, options?: RequestInit): Promise<void> => {
-
-  return customFetch<void>(getDeleteScheduleEventUrl(id),
-  {
-    ...options,
-    method: 'DELETE'
-
-
-  }
-);}
-
-
-
-
-
-export const getDeleteScheduleEventMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteScheduleEvent>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteScheduleEvent>>, TError,{id: number}, TContext> => {
-
-const mutationKey = ['deleteScheduleEvent'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteScheduleEvent>>, {id: number}> = (props) => {
-          const {id} = props ?? {};
-
-          return  deleteScheduleEvent(id,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeleteScheduleEventMutationResult = NonNullable<Awaited<ReturnType<typeof deleteScheduleEvent>>>
-
-    export type DeleteScheduleEventMutationError = ErrorType<unknown>
-
-    /**
- * @summary Delete a schedule event
- */
-export const useDeleteScheduleEvent = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteScheduleEvent>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
- ): UseMutationResult<
-        Awaited<ReturnType<typeof deleteScheduleEvent>>,
-        TError,
-        {id: number},
-        TContext
-      > => {
-      return useMutation(getDeleteScheduleEventMutationOptions(options));
+      return useMutation(getDeletePlannerItemMutationOptions(options));
     }
 
 export const getCreateStudySessionUrl = () => {

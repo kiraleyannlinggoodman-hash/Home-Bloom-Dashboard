@@ -1,11 +1,6 @@
 import { Router, type IRouter } from "express";
 import { and, eq, gte, sql } from "drizzle-orm";
-import {
-  db,
-  examsTable,
-  studySessionsTable,
-  tasksTable,
-} from "@workspace/db";
+import { db, plannerItemsTable, studySessionsTable } from "@workspace/db";
 import { GetDashboardSummaryResponse } from "@workspace/api-zod";
 import { bloomProgressLabel, getOrCreateUserStats } from "../lib/bloomStats";
 import { todayDateString } from "../lib/dates";
@@ -17,13 +12,24 @@ router.get("/dashboard/summary", async (_req, res): Promise<void> => {
 
   const [tasksDueTodayResult] = await db
     .select({ count: sql<number>`count(*)::int` })
-    .from(tasksTable)
-    .where(and(eq(tasksTable.dueDate, today), eq(tasksTable.completed, false)));
+    .from(plannerItemsTable)
+    .where(
+      and(
+        eq(plannerItemsTable.type, "homework"),
+        eq(plannerItemsTable.date, today),
+        eq(plannerItemsTable.completed, false),
+      ),
+    );
 
   const [upcomingExamsResult] = await db
     .select({ count: sql<number>`count(*)::int` })
-    .from(examsTable)
-    .where(gte(examsTable.examDate, today));
+    .from(plannerItemsTable)
+    .where(
+      and(
+        eq(plannerItemsTable.type, "exam"),
+        gte(plannerItemsTable.date, today),
+      ),
+    );
 
   const [studyMinutesResult] = await db
     .select({ total: sql<number>`coalesce(sum(duration_minutes), 0)::int` })

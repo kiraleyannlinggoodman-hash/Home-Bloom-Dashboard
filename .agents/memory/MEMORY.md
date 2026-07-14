@@ -1,0 +1,1 @@
+- [Drizzle push table rename prompt](drizzle-push-rename-prompt.md) — dropping+adding tables in one schema change can hang `drizzle-kit push` on a non-interactive TTY prompt.

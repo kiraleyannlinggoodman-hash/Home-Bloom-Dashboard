@@ -7,12 +7,11 @@ import { AppLayout } from "@/components/layout"
 
 import {
   useGetDashboardSummary,
-  useListTasks,
-  useListScheduleEvents,
+  useListPlannerItems,
   useGetDailyQuote,
-  useUpdateTask,
+  useUpdatePlannerItem,
   getGetDashboardSummaryQueryKey,
-  getListTasksQueryKey
+  getListPlannerItemsQueryKey
 } from "@workspace/api-client-react"
 import { useQueryClient } from "@tanstack/react-query"
 
@@ -22,25 +21,42 @@ export default function Dashboard() {
 
   // Queries
   const { data: summary, isLoading: isLoadingSummary } = useGetDashboardSummary()
-  const { data: tasks, isLoading: isLoadingTasks } = useListTasks({ dueToday: true })
-  const { data: schedule, isLoading: isLoadingSchedule } = useListScheduleEvents({ date: today })
+  const { data: tasks, isLoading: isLoadingTasks } = useListPlannerItems({ from: today, type: "homework" })
+  const { data: allPlannerItems, isLoading: isLoadingSchedule } = useListPlannerItems({ from: today, to: today })
   const { data: quote } = useGetDailyQuote()
 
   // Mutations
   const queryClient = useQueryClient()
-  const updateTask = useUpdateTask()
+  const updatePlannerItem = useUpdatePlannerItem()
 
   const toggleTask = (id: number, currentCompleted: boolean) => {
-    updateTask.mutate(
+    updatePlannerItem.mutate(
       { id, data: { completed: !currentCompleted } },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: getListTasksQueryKey({ dueToday: true }) })
+          queryClient.invalidateQueries({ queryKey: getListPlannerItemsQueryKey() })
           queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() })
         }
       }
     )
   }
+
+  // Schedule filtering & mapping
+  const schedule = allPlannerItems
+    ? [...allPlannerItems]
+        .sort((a, b) => {
+          if (!a.startTime && !b.startTime) return 0;
+          if (!a.startTime) return -1; // "All day" first
+          if (!b.startTime) return 1;
+          return a.startTime.localeCompare(b.startTime);
+        })
+        .map(item => ({
+          id: item.id,
+          time: item.startTime || "All Day",
+          title: item.title,
+          type: item.type
+        }))
+    : []
 
   // Greeting logic
   let greeting = "Hello"
@@ -181,7 +197,7 @@ export default function Dashboard() {
                   <div className="py-8 text-center text-muted-foreground animate-pulse">Loading schedule...</div>
                 ) : schedule && schedule.length > 0 ? (
                   <div className="relative border-l-2 border-secondary ml-4 space-y-8">
-                    {schedule.map((event, i) => (
+                    {schedule.map((event) => (
                       <div key={event.id} className="relative pl-8">
                         <div className="absolute -left-[11px] top-1 w-5 h-5 rounded-full border-[5px] border-card bg-primary shadow-sm" />
                         <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-5">

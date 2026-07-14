@@ -6,12 +6,13 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export type ScheduleEventInputType = typeof ScheduleEventInputType[keyof typeof ScheduleEventInputType];
+export type PlannerItemType = typeof PlannerItemType[keyof typeof PlannerItemType];
 
 
-export const ScheduleEventInputType = {
+export const PlannerItemType = {
   homework: 'homework',
-  study_session: 'study_session',
+  exam: 'exam',
   event: 'event',
+  study_block: 'study_block',
   note: 'note',
 } as const;

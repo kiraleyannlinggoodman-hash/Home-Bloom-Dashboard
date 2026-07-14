@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react"
+import { useState } from "react"
 import { useQueryClient } from "@tanstack/react-query"
 import { format } from "date-fns"
 import { motion } from "framer-motion"
@@ -22,12 +22,10 @@ import {
 } from "@/components/ui/select"
 
 import {
-  useCreateTask,
+  useCreatePlannerItem,
   useCreateStudySession,
-  useCreateScheduleEvent,
   getGetDashboardSummaryQueryKey,
-  getListTasksQueryKey,
-  getListScheduleEventsQueryKey,
+  getListPlannerItemsQueryKey,
 } from "@workspace/api-client-react"
 
 export function QuickActions() {
@@ -89,20 +87,22 @@ function ActionCard({ icon, title, onClick, delay }: { icon: React.ReactNode, ti
 // Modals
 function HomeworkModal({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) {
   const queryClient = useQueryClient()
-  const createTask = useCreateTask()
+  const createItem = useCreatePlannerItem()
   const [title, setTitle] = useState("")
   const [subject, setSubject] = useState("")
   const [dueDate, setDueDate] = useState("")
+
+  const today = format(new Date(), 'yyyy-MM-dd')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!title) return
 
-    createTask.mutate(
-      { data: { title, subject, type: "homework", dueDate: dueDate || undefined } },
+    createItem.mutate(
+      { data: { title, subject: subject || undefined, type: "homework", date: dueDate || today } },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: getListTasksQueryKey({ dueToday: true }) })
+          queryClient.invalidateQueries({ queryKey: getListPlannerItemsQueryKey() })
           queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() })
           onOpenChange(false)
           setTitle("")
@@ -134,7 +134,7 @@ function HomeworkModal({ open, onOpenChange }: { open: boolean, onOpenChange: (o
             <Input id="hw-due" type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
           </div>
           <div className="pt-4 flex justify-end">
-            <Button type="submit" disabled={!title || createTask.isPending}>
+            <Button type="submit" disabled={!title || createItem.isPending}>
               Add Homework
             </Button>
           </div>
@@ -210,7 +210,7 @@ function StudyModal({ open, onOpenChange }: { open: boolean, onOpenChange: (open
 
 function EventModal({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) {
   const queryClient = useQueryClient()
-  const createEvent = useCreateScheduleEvent()
+  const createItem = useCreatePlannerItem()
   const [title, setTitle] = useState("")
   const [time, setTime] = useState("12:00")
   
@@ -220,11 +220,12 @@ function EventModal({ open, onOpenChange }: { open: boolean, onOpenChange: (open
     e.preventDefault()
     if (!title || !time) return
 
-    createEvent.mutate(
-      { data: { title, time, type: "event", date: today } },
+    createItem.mutate(
+      { data: { title, startTime: time, type: "event", date: today } },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: getListScheduleEventsQueryKey({ date: today }) })
+          queryClient.invalidateQueries({ queryKey: getListPlannerItemsQueryKey() })
+          queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() })
           onOpenChange(false)
           setTitle("")
           setTime("12:00")
@@ -250,7 +251,7 @@ function EventModal({ open, onOpenChange }: { open: boolean, onOpenChange: (open
             <Input id="ev-time" type="time" value={time} onChange={(e) => setTime(e.target.value)} />
           </div>
           <div className="pt-4 flex justify-end">
-            <Button type="submit" disabled={!title || !time || createEvent.isPending}>
+            <Button type="submit" disabled={!title || !time || createItem.isPending}>
               Add to Schedule
             </Button>
           </div>
@@ -262,18 +263,21 @@ function EventModal({ open, onOpenChange }: { open: boolean, onOpenChange: (open
 
 function NoteModal({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) {
   const queryClient = useQueryClient()
-  const createTask = useCreateTask()
+  const createItem = useCreatePlannerItem()
   const [title, setTitle] = useState("")
+  
+  const today = format(new Date(), 'yyyy-MM-dd')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!title) return
 
-    createTask.mutate(
-      { data: { title, type: "note" } },
+    createItem.mutate(
+      { data: { title, type: "note", date: today } },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: getListTasksQueryKey({ dueToday: true }) })
+          queryClient.invalidateQueries({ queryKey: getListPlannerItemsQueryKey() })
+          queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() })
           onOpenChange(false)
           setTitle("")
         }
@@ -294,7 +298,7 @@ function NoteModal({ open, onOpenChange }: { open: boolean, onOpenChange: (open:
             <Input id="nt-title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g., Buy more pens" autoFocus />
           </div>
           <div className="pt-4 flex justify-end">
-            <Button type="submit" disabled={!title || createTask.isPending}>
+            <Button type="submit" disabled={!title || createItem.isPending}>
               Save Note
             </Button>
           </div>

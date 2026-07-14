@@ -1,0 +1,117 @@
+🌸 Bloom Planner Prompt
+
+Build the Bloom Planner page for a modern student productivity app.
+
+Use the same minimalist soft pink and white design as the Bloom dashboard.
+
+Keep the existing navigation, color palette, typography, and overall design language consistent with the dashboard.
+
+Design Philosophy
+
+The Bloom Planner should feel calm, welcoming, and effortless to use. It should resemble a beautifully organized study journal rather than a complex productivity app.
+
+Do not separate Homework, Exams, Events, and Study Blocks into different pages.
+
+Instead, build one unified planner powered by a single underlying database. Every item should simply have a Type (Homework, Exam, Event, or Study Block), and the interface should intelligently filter and display items based on their type. This keeps the experience simple while remaining extremely powerful and scalable.
+
+Features
+📅 Today / Week / Month tabs
+🌸 Summary cards showing:
+✅ Homework
+🚨 Exams
+📚 Study Blocks
+📅 Events
+📖 Beautiful vertical timeline for today's schedule
+🗓️ Minimalist monthly calendar with task indicators
+➕ Floating "+" button that opens a modal to create:
+✅ Homework
+🚨 Exam
+📅 Event
+📚 Study Block
+🏷️ Filter chips:
+All
+Homework
+Exams
+Events
+Study
+📱 Swipe actions on mobile:
+Swipe right → ✅ Complete
+Swipe left → 🗑 Delete
+🌸 Friendly empty state with an encouraging illustration/message when nothing is scheduled.
+Planner Item Design
+
+Every planner item should appear as a clean, rounded card.
+
+Examples:
+
+📚 Biology Revision
+
+2:00 PM – 3:00 PM
+
+🌿 Science
+
+🌸 High Priority
+✅ Math Homework
+
+Due Today
+
+📐 Math
+
+🟢 Small Task
+Calendar
+
+Create a clean monthly calendar.
+
+Small colored dots beneath dates that contain planner items.
+Tapping a date should display that day's timeline.
+Keep the calendar minimal with plenty of whitespace.
+Colors
+
+Use subtle colors only.
+
+📚 Study → Soft Blue
+✅ Homework → Soft Green
+🚨 Exam → Soft Coral
+📅 Event → Soft Purple
+
+Avoid bright or saturated colors.
+
+Emojis
+
+Use emojis throughout the interface instead of generic icons wherever appropriate.
+
+Examples:
+
+📚 Study
+✅ Homework
+🚨 Exams
+📅 Events
+🌸 Bloom
+🎯 Focus
+🌱 Growth
+
+The emojis should feel intentional and help students quickly identify sections.
+
+Animations
+
+Use subtle, premium animations.
+
+Smooth page transitions
+Soft hover effects
+Gentle button scaling
+No flashy animations or bouncing
+Responsive Design
+
+The planner should work beautifully on desktop, tablet, and mobile.
+
+On mobile:
+
+Cards stack vertically.
+Comfortable spacing for touch.
+Sticky bottom navigation.
+Floating "+" button remains accessible.
+Overall Goal
+
+The planner should feel like the heart of Bloom.
+
+Students should immediately understand how to organize their school life without needing to learn a complicated system. The interface should be peaceful, elegant, and distraction-free while remaining powerful underneath through a single unified planner database.

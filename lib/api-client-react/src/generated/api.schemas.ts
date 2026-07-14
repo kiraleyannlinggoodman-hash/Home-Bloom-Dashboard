@@ -19,108 +19,73 @@ export interface DashboardSummary {
   bloomProgressLabel: string;
 }
 
-export type TaskType = typeof TaskType[keyof typeof TaskType];
+export type PlannerItemType = typeof PlannerItemType[keyof typeof PlannerItemType];
 
 
-export const TaskType = {
+export const PlannerItemType = {
   homework: 'homework',
+  exam: 'exam',
+  event: 'event',
+  study_block: 'study_block',
   note: 'note',
 } as const;
 
-export interface Task {
+export type PlannerItemPriority = typeof PlannerItemPriority[keyof typeof PlannerItemPriority];
+
+
+export const PlannerItemPriority = {
+  low: 'low',
+  medium: 'medium',
+  high: 'high',
+} as const;
+
+export interface PlannerItem {
   id: number;
   title: string;
-  type: TaskType;
+  type: PlannerItemType;
   /** @nullable */
   subject?: string | null;
+  /** Calendar date YYYY-MM-DD this item belongs to */
+  date: string;
   /**
-     * Calendar date YYYY-MM-DD
+     * 24h time HH:mm
      * @nullable
      */
-  dueDate?: string | null;
+  startTime?: string | null;
+  /**
+     * 24h time HH:mm
+     * @nullable
+     */
+  endTime?: string | null;
+  priority: PlannerItemPriority;
   completed: boolean;
-  createdAt: string;
-}
-
-export type TaskInputType = typeof TaskInputType[keyof typeof TaskInputType];
-
-
-export const TaskInputType = {
-  homework: 'homework',
-  note: 'note',
-} as const;
-
-export interface TaskInput {
-  /** @minLength 1 */
-  title: string;
-  type: TaskInputType;
-  subject?: string;
-  /** Calendar date YYYY-MM-DD */
-  dueDate?: string;
-}
-
-export interface TaskUpdate {
-  /** @minLength 1 */
-  title?: string;
-  subject?: string;
-  dueDate?: string;
-  completed?: boolean;
-}
-
-export interface Exam {
-  id: number;
-  subject: string;
-  /** Calendar date YYYY-MM-DD */
-  examDate: string;
   /** @nullable */
   notes?: string | null;
   createdAt: string;
 }
 
-export interface ExamInput {
+export interface PlannerItemInput {
   /** @minLength 1 */
-  subject: string;
-  examDate: string;
+  title: string;
+  type: PlannerItemType;
+  subject?: string;
+  date: string;
+  startTime?: string;
+  endTime?: string;
+  priority?: PlannerItemPriority;
   notes?: string;
 }
 
-export type ScheduleEventType = typeof ScheduleEventType[keyof typeof ScheduleEventType];
-
-
-export const ScheduleEventType = {
-  homework: 'homework',
-  study_session: 'study_session',
-  event: 'event',
-  note: 'note',
-} as const;
-
-export interface ScheduleEvent {
-  id: number;
-  title: string;
-  type: ScheduleEventType;
-  /** Calendar date YYYY-MM-DD */
-  date: string;
-  /** 24h time HH:mm */
-  time: string;
-  createdAt: string;
-}
-
-export type ScheduleEventInputType = typeof ScheduleEventInputType[keyof typeof ScheduleEventInputType];
-
-
-export const ScheduleEventInputType = {
-  homework: 'homework',
-  study_session: 'study_session',
-  event: 'event',
-  note: 'note',
-} as const;
-
-export interface ScheduleEventInput {
+export interface PlannerItemUpdate {
   /** @minLength 1 */
-  title: string;
-  type: ScheduleEventInputType;
-  date: string;
-  time: string;
+  title?: string;
+  subject?: string;
+  date?: string;
+  startTime?: string;
+  endTime?: string;
+  priority?: PlannerItemPriority;
+  completed?: boolean;
+  notes?: string;
 }
 
 export interface StudySession {
@@ -147,18 +112,15 @@ export interface Quote {
   author?: string | null;
 }
 
-export type ListTasksParams = {
-dueToday?: boolean;
-};
-
-export type ListExamsParams = {
-upcoming?: boolean;
-};
-
-export type ListScheduleEventsParams = {
+export type ListPlannerItemsParams = {
 /**
- * Calendar date (YYYY-MM-DD). Defaults to today.
+ * Inclusive start date (YYYY-MM-DD)
  */
-date?: string;
+from?: string;
+/**
+ * Inclusive end date (YYYY-MM-DD). Defaults to `from` when omitted.
+ */
+to?: string;
+type?: PlannerItemType;
 };
 
