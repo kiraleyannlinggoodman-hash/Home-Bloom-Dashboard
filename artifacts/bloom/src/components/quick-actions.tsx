@@ -1,6 +1,5 @@
 import { useState, useCallback, useRef } from "react"
 import { useQueryClient } from "@tanstack/react-query"
-import { Plus, BookOpen, Calendar as CalendarIcon, Clock, PenLine, Sparkles } from "lucide-react"
 import { format } from "date-fns"
 import { motion } from "framer-motion"
 
@@ -35,27 +34,27 @@ export function QuickActions() {
   const [openModal, setOpenModal] = useState<"homework" | "study" | "event" | "note" | null>(null)
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       <ActionCard 
-        icon={<BookOpen className="w-5 h-5" />} 
+        icon="📝" 
         title="Homework" 
         onClick={() => setOpenModal("homework")}
         delay={0.1}
       />
       <ActionCard 
-        icon={<Clock className="w-5 h-5" />} 
+        icon="⏱️" 
         title="Study Session" 
         onClick={() => setOpenModal("study")}
         delay={0.15}
       />
       <ActionCard 
-        icon={<CalendarIcon className="w-5 h-5" />} 
+        icon="📅" 
         title="Event" 
         onClick={() => setOpenModal("event")}
         delay={0.2}
       />
       <ActionCard 
-        icon={<PenLine className="w-5 h-5" />} 
+        icon="✏️" 
         title="Note" 
         onClick={() => setOpenModal("note")}
         delay={0.25}
@@ -74,14 +73,15 @@ function ActionCard({ icon, title, onClick, delay }: { icon: React.ReactNode, ti
     <motion.button
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
+      whileHover={{ scale: 1.02, y: -2 }}
       transition={{ delay, duration: 0.4, ease: "easeOut" }}
       onClick={onClick}
-      className="flex flex-col items-center justify-center p-4 bg-card rounded-[1.5rem] border border-card-border shadow-sm hover:shadow-md hover:border-primary/20 transition-all text-card-foreground group"
+      className="flex flex-col items-center justify-center p-6 bg-card rounded-[1.5rem] border border-transparent shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all text-card-foreground group"
     >
-      <div className="w-10 h-10 rounded-full bg-secondary/50 flex items-center justify-center text-primary mb-3 group-hover:scale-110 group-hover:bg-primary/10 transition-all">
+      <div className="w-14 h-14 rounded-[1rem] bg-secondary flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
         {icon}
       </div>
-      <span className="text-sm font-medium">{title}</span>
+      <span className="text-[15px] font-medium">{title}</span>
     </motion.button>
   )
 }
@@ -117,7 +117,7 @@ function HomeworkModal({ open, onOpenChange }: { open: boolean, onOpenChange: (o
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Homework</DialogTitle>
+          <DialogTitle>Add Homework 📝</DialogTitle>
           <DialogDescription>Add an upcoming assignment or task.</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
@@ -172,7 +172,7 @@ function StudyModal({ open, onOpenChange }: { open: boolean, onOpenChange: (open
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Log Study Session</DialogTitle>
+          <DialogTitle>Log Study Session ⏱️</DialogTitle>
           <DialogDescription>Record focused study time.</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
@@ -237,7 +237,7 @@ function EventModal({ open, onOpenChange }: { open: boolean, onOpenChange: (open
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Event Today</DialogTitle>
+          <DialogTitle>Add Event Today 📅</DialogTitle>
           <DialogDescription>Schedule an event for today.</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
@@ -285,7 +285,7 @@ function NoteModal({ open, onOpenChange }: { open: boolean, onOpenChange: (open:
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Quick Note</DialogTitle>
+          <DialogTitle>Quick Note ✏️</DialogTitle>
           <DialogDescription>Jot down a quick thought or reminder.</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">

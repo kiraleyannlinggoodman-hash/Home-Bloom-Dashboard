@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @plugin "@tailwindcss/typography";
@@ -52,87 +52,88 @@
 }
 
 :root {
-  /* Warm cozy journal light mode */
-  --background: 42 33% 97%; /* #Faf9f5 */
-  --foreground: 210 15% 20%; /* #2b3238 */
+  /* Calm White & Blush Pink Aesthetic */
+  --background: 20 100% 99%; /* #FFFDFC */
+  --foreground: 340 10% 20%; 
   
-  --card: 0 0% 100%; /* #ffffff */
-  --card-foreground: 210 15% 20%;
-  --card-border: 40 15% 92%;
+  --card: 0 0% 100%;
+  --card-foreground: 340 10% 20%;
+  --card-border: 0 0% 100%; 
   
   --popover: 0 0% 100%;
-  --popover-foreground: 210 15% 20%;
-  --popover-border: 40 15% 92%;
+  --popover-foreground: 340 10% 20%;
+  --popover-border: 338 68% 96%;
   
-  /* Calm Sage Green */
-  --primary: 155 25% 42%;
+  /* Accent Pink #E9A8C2 */
+  --primary: 336 60% 79%;
   --primary-foreground: 0 0% 100%;
   
-  --secondary: 40 20% 92%;
-  --secondary-foreground: 155 25% 30%;
+  /* Soft Blush Pink #F7DCE6 */
+  --secondary: 338 68% 92%;
+  --secondary-foreground: 336 60% 40%;
   
-  --muted: 40 15% 92%;
-  --muted-foreground: 210 10% 50%;
+  --muted: 338 30% 96%;
+  --muted-foreground: 340 10% 50%;
   
-  --accent: 25 40% 94%; /* Soft terracotta tint */
-  --accent-foreground: 25 50% 40%;
+  --accent: 338 68% 92%;
+  --accent-foreground: 336 60% 40%;
   
   --destructive: 0 60% 60%;
   --destructive-foreground: 0 0% 100%;
   
-  --border: 40 15% 90%;
-  --input: 40 15% 90%;
-  --ring: 155 25% 42%;
+  --border: 338 30% 94%;
+  --input: 338 30% 94%;
+  --ring: 336 60% 79%;
   
-  --sidebar: 42 33% 95%;
-  --sidebar-foreground: 210 15% 30%;
-  --sidebar-border: 40 15% 90%;
+  --sidebar: 0 0% 100%;
+  --sidebar-foreground: 340 10% 30%;
+  --sidebar-border: 338 30% 96%;
 
-  --bloom: 155 35% 55%;
+  --bloom: 336 60% 79%;
 
-  --app-font-sans: 'Plus Jakarta Sans', sans-serif;
-  --app-font-serif: 'Instrument Serif', serif;
+  --app-font-sans: 'Inter', sans-serif;
+  --app-font-serif: 'Poppins', sans-serif;
   
-  --radius: 1rem;
+  --radius: 1.5rem;
 }
 
 .dark {
   /* Dark mode is disabled by default for this app unless requested, but defining a calm dark mode just in case */
-  --background: 210 15% 12%; 
-  --foreground: 40 20% 90%;
+  --background: 340 20% 10%; 
+  --foreground: 338 30% 90%;
   
-  --card: 210 15% 15%;
-  --card-foreground: 40 20% 90%;
-  --card-border: 210 15% 20%;
+  --card: 340 20% 12%;
+  --card-foreground: 338 30% 90%;
+  --card-border: 340 20% 14%;
   
-  --popover: 210 15% 15%;
-  --popover-foreground: 40 20% 90%;
-  --popover-border: 210 15% 20%;
+  --popover: 340 20% 12%;
+  --popover-foreground: 338 30% 90%;
+  --popover-border: 340 20% 14%;
   
-  --primary: 155 25% 50%;
-  --primary-foreground: 210 15% 12%;
+  --primary: 336 50% 65%;
+  --primary-foreground: 340 20% 10%;
   
-  --secondary: 210 15% 20%;
-  --secondary-foreground: 40 20% 90%;
+  --secondary: 340 20% 16%;
+  --secondary-foreground: 338 30% 90%;
   
-  --muted: 210 15% 20%;
-  --muted-foreground: 210 10% 60%;
+  --muted: 340 20% 16%;
+  --muted-foreground: 340 10% 60%;
   
-  --accent: 25 30% 20%;
-  --accent-foreground: 25 40% 80%;
+  --accent: 340 20% 16%;
+  --accent-foreground: 338 30% 90%;
   
   --destructive: 0 50% 50%;
   --destructive-foreground: 0 0% 100%;
   
-  --border: 210 15% 22%;
-  --input: 210 15% 22%;
-  --ring: 155 25% 50%;
+  --border: 340 20% 18%;
+  --input: 340 20% 18%;
+  --ring: 336 50% 65%;
   
-  --sidebar: 210 15% 10%;
-  --sidebar-foreground: 40 20% 80%;
-  --sidebar-border: 210 15% 15%;
+  --sidebar: 340 20% 10%;
+  --sidebar-foreground: 338 30% 80%;
+  --sidebar-border: 340 20% 14%;
 
-  --bloom: 155 35% 50%;
+  --bloom: 336 50% 65%;
 }
 
 @layer base {

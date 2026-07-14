@@ -1,10 +1,5 @@
 import { format } from "date-fns"
 import { motion } from "framer-motion"
-import { 
-  Sun, Moon, CloudSun, 
-  CheckCircle2, Circle, Clock, Target, ListTodo, Trophy,
-  Quote as QuoteIcon, Sparkles, BookMarked
-} from "lucide-react"
 
 import { Progress } from "@/components/ui/progress"
 import { QuickActions } from "@/components/quick-actions"
@@ -49,20 +44,20 @@ export default function Dashboard() {
 
   // Greeting logic
   let greeting = "Hello"
-  let GreetingIcon = Sun
+  let GreetingIcon = "👋"
   let greetingSubtitle = "Let's bloom today."
   
   if (hour < 12) {
     greeting = "Good morning"
-    GreetingIcon = CloudSun
+    GreetingIcon = "🌸"
     greetingSubtitle = "Let's bloom today."
   } else if (hour < 18) {
     greeting = "Good afternoon"
-    GreetingIcon = Sun
+    GreetingIcon = "☀️"
     greetingSubtitle = "Keep up the great work."
   } else {
     greeting = "Good evening"
-    GreetingIcon = Moon
+    GreetingIcon = "🌙"
     greetingSubtitle = "Finish strong, then get some rest."
   }
 
@@ -79,21 +74,21 @@ export default function Dashboard() {
 
   return (
     <AppLayout>
-      <div className="space-y-8 md:space-y-10 animate-in fade-in duration-700 pb-10">
+      <div className="space-y-12 animate-in fade-in duration-700 pb-10">
         
         {/* Header Section */}
         <header className="flex items-end justify-between">
-          <div className="space-y-2">
+          <div className="space-y-3">
             <motion.div 
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
-              className="flex items-center gap-3"
+              className="flex items-center gap-4"
             >
-              <div className="p-2.5 rounded-2xl bg-secondary text-primary">
-                <GreetingIcon className="w-6 h-6" />
+              <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-secondary text-2xl shadow-sm">
+                {GreetingIcon}
               </div>
-              <h1 className="text-3xl md:text-4xl font-serif text-foreground tracking-tight">
+              <h1 className="text-4xl md:text-5xl font-serif text-foreground tracking-tight font-semibold">
                 {greeting}, {name}
               </h1>
             </motion.div>
@@ -101,7 +96,7 @@ export default function Dashboard() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-muted-foreground text-lg ml-14"
+              className="text-muted-foreground text-[1.1rem] ml-[4.5rem]"
             >
               {greetingSubtitle}
             </motion.p>
@@ -109,47 +104,48 @@ export default function Dashboard() {
         </header>
 
         {/* Hero & Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Main Focus Card */}
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
+            whileHover={{ scale: 1.01, y: -2 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="md:col-span-2 bg-primary text-primary-foreground p-6 md:p-8 rounded-[2rem] shadow-sm relative overflow-hidden"
+            className="md:col-span-2 bg-primary text-primary-foreground p-8 md:p-10 rounded-[1.5rem] shadow-[0_8px_30px_rgba(233,168,194,0.3)] relative overflow-hidden"
           >
-            <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
-              <Sparkles className="w-32 h-32" />
+            <div className="absolute top-0 right-0 p-8 opacity-20 pointer-events-none text-8xl">
+              🎯
             </div>
             <div className="relative z-10 flex flex-col h-full justify-between">
-              <span className="font-medium text-primary-foreground/80 flex items-center gap-2">
-                <Target className="w-5 h-5" /> Today's Focus
+              <span className="font-medium text-primary-foreground/90 flex items-center gap-2 text-lg">
+                <span>🎯</span> Today's Focus
               </span>
-              <div className="mt-8 mb-2">
-                <div className="text-5xl md:text-6xl font-serif tracking-tight">
+              <div className="mt-12 mb-2">
+                <div className="text-6xl md:text-7xl font-serif tracking-tight font-semibold">
                   {isLoadingSummary ? "—" : formatMinutes(summary?.studyMinutesToday || 0)}
                 </div>
-                <div className="text-primary-foreground/80 mt-2 text-lg">studied today</div>
+                <div className="text-primary-foreground/90 mt-3 text-xl">studied today</div>
               </div>
             </div>
           </motion.div>
 
           {/* Stat Cards */}
-          <div className="md:col-span-2 grid grid-cols-2 gap-4">
+          <div className="md:col-span-2 grid grid-cols-2 gap-6">
             <StatCard 
-              icon={<ListTodo className="w-5 h-5" />} 
-              label="Tasks Due" 
+              icon="✅" 
+              label="Tasks Due Today" 
               value={isLoadingSummary ? "—" : summary?.tasksDueToday} 
               delay={0.15}
             />
             <StatCard 
-              icon={<Trophy className="w-5 h-5" />} 
-              label="Day Streak" 
+              icon="🔥" 
+              label="Focus Streak" 
               value={isLoadingSummary ? "—" : summary?.focusStreakDays} 
               delay={0.2}
             />
             <StatCard 
-              icon={<BookMarked className="w-5 h-5" />} 
-              label="Exams" 
+              icon="🚨" 
+              label="Upcoming Exams" 
               value={isLoadingSummary ? "—" : summary?.upcomingExamsCount} 
               delay={0.25}
               className="col-span-2"
@@ -159,39 +155,39 @@ export default function Dashboard() {
 
         {/* Quick Actions */}
         <section>
-          <div className="flex items-center justify-between mb-4 px-2">
-            <h2 className="text-lg font-semibold tracking-tight">Quick Actions</h2>
+          <div className="flex items-center justify-between mb-6 px-2">
+            <h2 className="text-2xl font-serif font-semibold tracking-tight flex items-center gap-2">✨ Quick Actions</h2>
           </div>
           <QuickActions />
         </section>
 
         {/* Main Content Layout Split */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           
           {/* Left Column: Schedule & Tasks */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-10">
             
             {/* Today's Schedule */}
-            <section className="bg-card border border-card-border rounded-[2rem] p-6 shadow-sm">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 bg-secondary rounded-xl text-primary">
-                  <Clock className="w-5 h-5" />
+            <section className="bg-card border border-transparent rounded-[1.5rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.03)]">
+              <div className="flex items-center gap-3 mb-8">
+                <div className="text-2xl">
+                  📅
                 </div>
-                <h2 className="text-xl font-serif tracking-tight">Today's Schedule</h2>
+                <h2 className="text-2xl font-serif font-semibold tracking-tight">Today's Schedule</h2>
               </div>
               
               <div className="space-y-4">
                 {isLoadingSchedule ? (
                   <div className="py-8 text-center text-muted-foreground animate-pulse">Loading schedule...</div>
                 ) : schedule && schedule.length > 0 ? (
-                  <div className="relative border-l-2 border-muted ml-4 space-y-6">
+                  <div className="relative border-l-2 border-secondary ml-4 space-y-8">
                     {schedule.map((event, i) => (
-                      <div key={event.id} className="relative pl-6">
-                        <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full border-4 border-card bg-primary" />
-                        <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4">
-                          <span className="font-mono text-sm text-primary font-medium">{event.time}</span>
-                          <span className="font-medium text-card-foreground">{event.title}</span>
-                          <span className="text-xs px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground uppercase tracking-wider font-semibold ml-auto sm:ml-0">
+                      <div key={event.id} className="relative pl-8">
+                        <div className="absolute -left-[11px] top-1 w-5 h-5 rounded-full border-[5px] border-card bg-primary shadow-sm" />
+                        <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-5">
+                          <span className="font-mono text-[15px] text-primary font-semibold">{event.time}</span>
+                          <span className="font-medium text-card-foreground text-[17px]">{event.title}</span>
+                          <span className="text-[11px] px-3 py-1 rounded-full bg-secondary text-secondary-foreground uppercase tracking-widest font-bold ml-auto sm:ml-0">
                             {event.type.replace('_', ' ')}
                           </span>
                         </div>
@@ -199,58 +195,55 @@ export default function Dashboard() {
                     ))}
                   </div>
                 ) : (
-                  <div className="py-10 text-center text-muted-foreground flex flex-col items-center">
-                    <Clock className="w-8 h-8 opacity-20 mb-3" />
-                    <p>Nothing scheduled yet. A clear day ahead.</p>
+                  <div className="py-12 text-center text-muted-foreground flex flex-col items-center">
+                    <span className="text-4xl mb-4 opacity-50">🍃</span>
+                    <p className="text-lg">Nothing scheduled yet. A clear day ahead.</p>
                   </div>
                 )}
               </div>
             </section>
 
             {/* Today's Tasks */}
-            <section className="bg-card border border-card-border rounded-[2rem] p-6 shadow-sm">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 bg-secondary rounded-xl text-primary">
-                  <ListTodo className="w-5 h-5" />
+            <section className="bg-card border border-transparent rounded-[1.5rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.03)]">
+              <div className="flex items-center gap-3 mb-8">
+                <div className="text-2xl">
+                  ✅
                 </div>
-                <h2 className="text-xl font-serif tracking-tight">Due Today</h2>
+                <h2 className="text-2xl font-serif font-semibold tracking-tight">Tasks Due Today</h2>
               </div>
               
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {isLoadingTasks ? (
                   <div className="py-8 text-center text-muted-foreground animate-pulse">Loading tasks...</div>
                 ) : tasks && tasks.length > 0 ? (
                   tasks.map((task) => (
-                    <div 
+                    <motion.div 
+                      whileHover={{ scale: 1.01 }}
                       key={task.id} 
-                      className={`flex items-start gap-4 p-4 rounded-2xl transition-all ${task.completed ? 'bg-secondary/30 opacity-60' : 'bg-secondary hover:bg-secondary/80'}`}
+                      className={`flex items-start gap-5 p-5 rounded-2xl transition-all shadow-sm ${task.completed ? 'bg-secondary/20 opacity-60' : 'bg-secondary/40 hover:bg-secondary/60'}`}
                     >
                       <button 
                         onClick={() => toggleTask(task.id, task.completed)}
-                        className="mt-0.5 text-primary hover:text-primary/80 transition-colors shrink-0"
+                        className="mt-0.5 text-xl transition-transform hover:scale-110 shrink-0"
                       >
-                        {task.completed ? (
-                          <CheckCircle2 className="w-5 h-5" />
-                        ) : (
-                          <Circle className="w-5 h-5" />
-                        )}
+                        {task.completed ? "☑️" : "⬜"}
                       </button>
                       <div className="flex-1 min-w-0">
-                        <p className={`font-medium text-sm leading-tight ${task.completed ? 'line-through text-muted-foreground' : 'text-card-foreground'}`}>
+                        <p className={`font-medium text-[16px] leading-tight ${task.completed ? 'line-through text-muted-foreground' : 'text-card-foreground'}`}>
                           {task.title}
                         </p>
                         {task.subject && (
-                          <p className="text-xs text-muted-foreground mt-1">
+                          <p className="text-[13px] text-muted-foreground mt-1.5 font-medium">
                             {task.subject}
                           </p>
                         )}
                       </div>
-                    </div>
+                    </motion.div>
                   ))
                 ) : (
-                  <div className="py-10 text-center text-muted-foreground flex flex-col items-center">
-                    <CheckCircle2 className="w-8 h-8 opacity-20 mb-3" />
-                    <p>All caught up. Good work.</p>
+                  <div className="py-12 text-center text-muted-foreground flex flex-col items-center">
+                    <span className="text-4xl mb-4 opacity-50">✨</span>
+                    <p className="text-lg">All caught up. Good work.</p>
                   </div>
                 )}
               </div>
@@ -259,36 +252,37 @@ export default function Dashboard() {
           </div>
 
           {/* Right Column: Progress & Quote */}
-          <div className="space-y-8">
+          <div className="space-y-10">
             
             {/* Bloom Progress */}
             <motion.section 
               initial={{ opacity: 0, x: 10 }}
               animate={{ opacity: 1, x: 0 }}
+              whileHover={{ y: -2 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="bg-card border border-card-border rounded-[2rem] p-6 shadow-sm"
+              className="bg-card border border-transparent rounded-[1.5rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.03)]"
             >
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 bg-accent rounded-xl text-accent-foreground">
-                  <Sparkles className="w-5 h-5" />
+              <div className="flex items-center gap-3 mb-8">
+                <div className="text-2xl">
+                  🌱
                 </div>
-                <h2 className="text-xl font-serif tracking-tight">Growth</h2>
+                <h2 className="text-2xl font-serif font-semibold tracking-tight">Bloom Progress</h2>
               </div>
               
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div className="flex justify-between items-end">
-                  <span className="font-medium text-foreground">
+                  <span className="font-semibold text-foreground text-lg">
                     {isLoadingSummary ? "..." : summary?.bloomProgressLabel}
                   </span>
-                  <span className="text-sm font-mono text-muted-foreground">
+                  <span className="text-[15px] font-mono font-medium text-primary">
                     {isLoadingSummary ? "0%" : `${summary?.bloomProgressPercent}%`}
                   </span>
                 </div>
                 <Progress 
                   value={summary?.bloomProgressPercent || 0} 
-                  className="h-3"
+                  className="h-4 rounded-full bg-secondary"
                 />
-                <p className="text-xs text-muted-foreground pt-2">
+                <p className="text-[13px] text-muted-foreground pt-3 font-medium leading-relaxed">
                   Studying is rewarded with better studying. Keep going.
                 </p>
               </div>
@@ -298,23 +292,25 @@ export default function Dashboard() {
             <motion.section 
               initial={{ opacity: 0, x: 10 }}
               animate={{ opacity: 1, x: 0 }}
+              whileHover={{ y: -2 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="bg-accent text-accent-foreground rounded-[2rem] p-8 shadow-sm flex flex-col justify-center min-h-[240px]"
+              className="bg-secondary text-secondary-foreground rounded-[1.5rem] p-10 shadow-sm flex flex-col justify-center min-h-[260px] relative overflow-hidden"
             >
-              <QuoteIcon className="w-8 h-8 opacity-20 mb-4" />
+              <div className="text-6xl mb-6 opacity-30">💭</div>
               {quote ? (
                 <>
-                  <p className="font-serif text-2xl leading-snug mb-6">"{quote.text}"</p>
+                  <p className="font-serif text-2xl md:text-3xl leading-relaxed mb-8 font-medium">"{quote.text}"</p>
                   {quote.author && (
-                    <p className="text-sm font-medium tracking-wide uppercase opacity-80 mt-auto">
+                    <p className="text-[13px] font-bold tracking-widest uppercase opacity-80 mt-auto">
                       — {quote.author}
                     </p>
                   )}
                 </>
               ) : (
-                <div className="animate-pulse flex flex-col gap-2">
-                  <div className="h-4 bg-accent-foreground/10 rounded w-3/4"></div>
-                  <div className="h-4 bg-accent-foreground/10 rounded w-1/2"></div>
+                <div className="animate-pulse flex flex-col gap-4">
+                  <div className="h-5 bg-secondary-foreground/10 rounded-full w-full"></div>
+                  <div className="h-5 bg-secondary-foreground/10 rounded-full w-3/4"></div>
+                  <div className="h-4 bg-secondary-foreground/10 rounded-full w-1/2 mt-4"></div>
                 </div>
               )}
             </motion.section>
@@ -331,13 +327,14 @@ function StatCard({ icon, label, value, delay, className = "" }: { icon: React.R
     <motion.div 
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
+      whileHover={{ scale: 1.02, y: -2 }}
       transition={{ duration: 0.4, delay }}
-      className={`bg-card border border-card-border p-6 rounded-[2rem] flex flex-col justify-between min-h-[140px] shadow-sm ${className}`}
+      className={`bg-card border border-transparent p-7 rounded-[1.5rem] flex flex-col justify-between min-h-[160px] shadow-[0_8px_30px_rgb(0,0,0,0.03)] ${className}`}
     >
-      <div className="flex items-center gap-2 text-muted-foreground font-medium text-sm">
-        {icon} {label}
+      <div className="flex items-center gap-2.5 text-muted-foreground font-medium text-[15px]">
+        <span className="text-xl">{icon}</span> {label}
       </div>
-      <div className="text-4xl md:text-5xl font-serif tracking-tight mt-4 text-foreground">
+      <div className="text-5xl md:text-6xl font-serif tracking-tight mt-5 text-foreground font-semibold">
         {value}
       </div>
     </motion.div>
