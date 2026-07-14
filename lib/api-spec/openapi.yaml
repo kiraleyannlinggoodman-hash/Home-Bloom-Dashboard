@@ -10,6 +10,18 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: dashboard
+    description: Home dashboard aggregate data
+  - name: tasks
+    description: Homework and note items
+  - name: exams
+    description: Upcoming exams
+  - name: schedule
+    description: Scheduled events for a given day
+  - name: study-sessions
+    description: Logged focus/study sessions
+  - name: quotes
+    description: Daily motivational quotes
 paths:
   /healthz:
     get:
@@ -24,6 +36,235 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Aggregate stats for the home dashboard
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /tasks:
+    get:
+      operationId: listTasks
+      tags: [tasks]
+      summary: List tasks
+      parameters:
+        - name: dueToday
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: List of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+    post:
+      operationId: createTask
+      tags: [tasks]
+      summary: Create a task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskInput"
+      responses:
+        "201":
+          description: Created task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+
+  /tasks/{id}:
+    patch:
+      operationId: updateTask
+      tags: [tasks]
+      summary: Update a task (e.g. toggle completion)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskUpdate"
+      responses:
+        "200":
+          description: Updated task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+    delete:
+      operationId: deleteTask
+      tags: [tasks]
+      summary: Delete a task
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /exams:
+    get:
+      operationId: listExams
+      tags: [exams]
+      summary: List exams, soonest first
+      parameters:
+        - name: upcoming
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: List of exams
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Exam"
+    post:
+      operationId: createExam
+      tags: [exams]
+      summary: Create an exam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExamInput"
+      responses:
+        "201":
+          description: Created exam
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exam"
+
+  /exams/{id}:
+    delete:
+      operationId: deleteExam
+      tags: [exams]
+      summary: Delete an exam
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /schedule:
+    get:
+      operationId: listScheduleEvents
+      tags: [schedule]
+      summary: List schedule events for a given date
+      parameters:
+        - name: date
+          in: query
+          required: false
+          description: "Calendar date (YYYY-MM-DD). Defaults to today."
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of schedule events, ordered by time
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ScheduleEvent"
+    post:
+      operationId: createScheduleEvent
+      tags: [schedule]
+      summary: Create a schedule event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ScheduleEventInput"
+      responses:
+        "201":
+          description: Created schedule event
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScheduleEvent"
+
+  /schedule/{id}:
+    delete:
+      operationId: deleteScheduleEvent
+      tags: [schedule]
+      summary: Delete a schedule event
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /study-sessions:
+    post:
+      operationId: createStudySession
+      tags: [study-sessions]
+      summary: Log a completed study/focus session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudySessionInput"
+      responses:
+        "201":
+          description: Created study session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudySession"
+
+  /quotes/daily:
+    get:
+      operationId: getDailyQuote
+      tags: [quotes]
+      summary: Get today's rotating quote
+      responses:
+        "200":
+          description: Daily quote
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Quote"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +275,213 @@ components:
       required:
         - status
 
+    DashboardSummary:
+      type: object
+      required:
+        - greetingName
+        - studyMinutesToday
+        - tasksDueToday
+        - upcomingExamsCount
+        - focusStreakDays
+        - bloomProgressPercent
+        - bloomProgressLabel
+      properties:
+        greetingName:
+          type: string
+        studyMinutesToday:
+          type: integer
+        tasksDueToday:
+          type: integer
+        upcomingExamsCount:
+          type: integer
+        focusStreakDays:
+          type: integer
+        bloomProgressPercent:
+          type: integer
+        bloomProgressLabel:
+          type: string
+
+    Task:
+      type: object
+      required:
+        - id
+        - title
+        - type
+        - completed
+        - createdAt
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        type:
+          type: string
+          enum: [homework, note]
+        subject:
+          type: ["string", "null"]
+        dueDate:
+          type: ["string", "null"]
+          description: "Calendar date YYYY-MM-DD"
+        completed:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+
+    TaskInput:
+      type: object
+      required:
+        - title
+        - type
+      properties:
+        title:
+          type: string
+          minLength: 1
+        type:
+          type: string
+          enum: [homework, note]
+        subject:
+          type: string
+        dueDate:
+          type: string
+          description: "Calendar date YYYY-MM-DD"
+
+    TaskUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+        subject:
+          type: string
+        dueDate:
+          type: string
+        completed:
+          type: boolean
+
+    Exam:
+      type: object
+      required:
+        - id
+        - subject
+        - examDate
+        - createdAt
+      properties:
+        id:
+          type: integer
+        subject:
+          type: string
+        examDate:
+          type: string
+          description: "Calendar date YYYY-MM-DD"
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+
+    ExamInput:
+      type: object
+      required:
+        - subject
+        - examDate
+      properties:
+        subject:
+          type: string
+          minLength: 1
+        examDate:
+          type: string
+        notes:
+          type: string
+
+    ScheduleEvent:
+      type: object
+      required:
+        - id
+        - title
+        - type
+        - date
+        - time
+        - createdAt
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        type:
+          type: string
+          enum: [homework, study_session, event, note]
+        date:
+          type: string
+          description: "Calendar date YYYY-MM-DD"
+        time:
+          type: string
+          description: "24h time HH:mm"
+        createdAt:
+          type: string
+          format: date-time
+
+    ScheduleEventInput:
+      type: object
+      required:
+        - title
+        - type
+        - date
+        - time
+      properties:
+        title:
+          type: string
+          minLength: 1
+        type:
+          type: string
+          enum: [homework, study_session, event, note]
+        date:
+          type: string
+        time:
+          type: string
+
+    StudySession:
+      type: object
+      required:
+        - id
+        - subject
+        - durationMinutes
+        - date
+        - createdAt
+      properties:
+        id:
+          type: integer
+        subject:
+          type: ["string", "null"]
+        durationMinutes:
+          type: integer
+        date:
+          type: string
+          description: "Calendar date YYYY-MM-DD"
+        createdAt:
+          type: string
+          format: date-time
+
+    StudySessionInput:
+      type: object
+      required:
+        - durationMinutes
+      properties:
+        subject:
+          type: string
+        durationMinutes:
+          type: integer
+          minimum: 1
+        date:
+          type: string
+          description: "Calendar date YYYY-MM-DD, defaults to today"
+
+    Quote:
+      type: object
+      required:
+        - text
+      properties:
+        text:
+          type: string
+        author:
+          type: ["string", "null"]

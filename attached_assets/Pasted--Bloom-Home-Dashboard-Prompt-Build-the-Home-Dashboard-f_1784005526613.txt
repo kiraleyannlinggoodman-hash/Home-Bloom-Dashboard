@@ -1,0 +1,349 @@
+🌸 Bloom Home Dashboard Prompt
+
+Build the Home Dashboard for a modern student productivity web app called Bloom.
+
+Brand Philosophy
+
+Bloom is a calm, minimalist study platform.
+
+Its philosophy is:
+
+"Studying is rewarded with better studying."
+
+The app should feel peaceful, elegant, and cozy rather than energetic or game-like.
+
+Think:
+
+Apple Health
+Notion
+Headspace
+Linear
+
+Avoid:
+
+Busy dashboards
+Bright colors
+Neon gradients
+Gaming aesthetics
+XP bars
+Coins
+Loud animations
+
+The dashboard should make students feel calm the moment they open the app.
+
+Color Palette
+
+Background:
+
+#FFFDFC
+
+Primary Pink:
+
+#F7DCE6
+
+Accent Pink:
+
+#E9A8C2
+
+Cards:
+
+Pure white
+
+Text:
+
+#444444
+
+Secondary Text:
+
+#888888
+
+Success:
+
+Soft green
+
+Warning:
+
+Soft orange
+
+Danger:
+
+Soft coral
+
+Use subtle shadows.
+
+Large rounded corners (20–28px).
+
+Lots of whitespace.
+
+Typography
+
+Use:
+
+Poppins for headings
+Inter for body text
+
+Greeting should be large.
+
+Numbers should be bold.
+
+Everything else should be lightweight.
+
+Layout
+
+Desktop layout:
+
+-----------------------------------------------------
+
+Good Morning, Kira 🌸
+
+Let's bloom today.
+
+-----------------------------------------------------
+
+Today's Focus Card
+
+-----------------------------------------------------
+
+Three statistic cards
+
+Tasks Due Today
+
+Upcoming Exams
+
+Focus Streak
+
+-----------------------------------------------------
+
+Today's Schedule
+
+-----------------------------------------------------
+
+Quick Actions
+
+-----------------------------------------------------
+
+Bloom Progress
+
+-----------------------------------------------------
+
+Daily Quote
+
+-----------------------------------------------------
+
+Everything should scroll naturally.
+
+No clutter.
+
+Greeting
+
+Display a dynamic greeting.
+
+Morning:
+
+☀️ Good morning, Kira
+
+Let's bloom today.
+
+Afternoon:
+
+🌤 Good afternoon, Kira
+
+Keep up the great work.
+
+Evening:
+
+🌙 Good evening, Kira
+
+Finish strong, then get some rest.
+
+Today's Focus Card
+
+Large hero card.
+
+Display:
+
+📚 Today's Focus
+
+Study Time Today
+
+Example:
+
+2h 15m
+
+Centered.
+
+Large typography.
+
+Soft pink accent.
+
+Statistic Cards
+
+Create three beautiful cards.
+
+Card 1
+
+✅ Tasks Due Today
+
+3
+
+Card 2
+
+🚨 Upcoming Exams
+
+2
+
+Card 3
+
+🔥 Focus Streak
+
+6 Days
+
+Cards should be horizontally aligned on desktop and stack on mobile.
+
+Today's Schedule
+
+Beautiful vertical timeline.
+
+Example:
+
+09:00
+
+Math Homework
+
+11:00
+
+Geography Notes
+
+15:00
+
+Science Revision
+
+Use minimalist timeline dots.
+
+Quick Actions
+
+Four rounded buttons.
+
+Homework
+Study Session
+Event
+Note
+
+White buttons with pink borders.
+
+Hover:
+
+slightly darker pink
+gentle scale animation
+soft shadow
+Bloom Progress
+
+Instead of XP or levels.
+
+Display:
+
+🌸 Bloom Progress
+
+A rounded progress bar.
+
+Example:
+
+62%
+
+Label:
+
+Blooming
+
+No coins.
+
+No points.
+
+No gaming elements.
+
+This should symbolize personal academic growth.
+
+Daily Quote
+
+Small elegant card.
+
+Rotate quotes.
+
+Example:
+
+"Small steps every day become big achievements."
+
+Bottom Navigation
+
+Simple modern navigation.
+
+Icons only.
+
+🏠 Home
+
+📅 Planner
+
+📚 Subjects
+
+🎯 Focus
+
+📊 Progress
+
+⚙️ Settings
+
+Highlight Home with a soft pink pill.
+
+Animations
+
+Use Framer Motion.
+
+Very subtle.
+
+Cards fade upward on load.
+
+Hover:
+
+Scale to 1.02
+
+Duration:
+
+0.2s
+
+No bouncing.
+
+No flashy effects.
+
+Responsiveness
+
+Desktop:
+
+3-column stat cards
+Spacious layout
+
+Tablet:
+
+2-column sections
+
+Mobile:
+
+Everything stacks vertically
+Comfortable thumb spacing
+Sticky bottom navigation
+Accessibility
+
+Use semantic HTML.
+
+Keyboard navigation.
+
+ARIA labels.
+
+Good color contrast.
+
+Overall Feeling
+
+The dashboard should feel like opening a beautiful study journal.
+
+The user should immediately feel:
+
+"Everything I need is here."
+
+The design should be premium, calm, distraction-free, and focused entirely on helping students study.
