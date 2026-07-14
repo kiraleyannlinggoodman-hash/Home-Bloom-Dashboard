@@ -1,0 +1,79 @@
+Implement the complete **Subjects** feature in the existing Bloom app.
+
+Create any new pages, components, routes, state management, and supporting files that are required. If a Subjects page does not already exist, create it from scratch. Add it to the app navigation so it is fully accessible and functional.
+
+Do **not** replace or redesign the existing Dashboard or Planner. Instead, extend the current app while maintaining the exact same visual design language.
+
+## Subjects Overview
+
+Create a beautiful **Subjects** page displaying every school subject as a rounded card in a responsive grid.
+
+Each subject card should display:
+
+* Subject emoji
+* Subject name
+* Current mastery level
+* Upcoming homework or exam
+* Number of notes
+
+Example subjects:
+
+* 🌿 Science
+* 📐 Mathematics
+* 🌍 Geography
+* 🇨🇳 Chinese
+* 🌸 Malay
+* ⭐ Astronomy
+
+Include an **➕ Add Subject** card that allows users to create new subjects.
+
+Clicking any subject should smoothly open that subject's dedicated workspace.
+
+---
+
+## Subject Workspace
+
+Each subject should have its own clean workspace that acts like a digital binder.
+
+Include the following sections:
+
+* 📚 Notes
+* 📄 Files
+* 🎯 Mastery
+* 📅 Planner
+* 📊 Progress
+* 🔥 Continue Studying
+* 🩷 Recent Activity
+
+Everything related to that subject should live inside this workspace.
+
+Design the workspace to be clean, organized, and easy to expand with future Bloom features.
+
+---
+
+## Design Requirements
+
+Use the exact same Bloom design language as the Dashboard and Planner.
+
+* White background (#FFFDFC)
+* Soft blush pink accents (#F7DCE6)
+* Rounded 24px cards
+* Plenty of whitespace
+* Soft shadows
+* Use emojis instead of generic icons where appropriate
+* Smooth, subtle animations
+* Fully responsive on desktop, tablet, and mobile
+
+The entire experience should feel calm, cozy, premium, and minimalist.
+
+---
+
+## Integration Requirements
+
+* Follow the existing project architecture and coding style.
+* Reuse existing UI components whenever possible.
+* Add the Subjects page to the app navigation.
+* Ensure all navigation works correctly.
+* Do not leave placeholder or broken links.
+* Ensure the feature compiles without errors.
+* When implementation is complete, automatically open the new Subjects page so it can be previewed immediately.

@@ -10,6 +10,11 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {
+    "@uppy/aws-s3": "^5.0.0",
+    "@uppy/core": "^5.0.0",
+    "@uppy/dashboard": "^5.0.0",
+    "@uppy/react": "^5.0.0",
+    "@workspace/object-storage-web": "workspace:*",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "^1.2.4",
     "@radix-ui/react-alert-dialog": "^1.1.7",

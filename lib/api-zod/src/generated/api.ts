@@ -164,3 +164,360 @@ export const GetDailyQuoteResponse = zod.object({
 })
 
 
+/**
+ * @summary List all subjects with card summary fields
+ */
+export const ListSubjectsResponseItem = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "emoji": zod.string(),
+  "masteryPercent": zod.number(),
+  "masteryLabel": zod.string(),
+  "notesCount": zod.number(),
+  "filesCount": zod.number(),
+  "upcomingItem": zod.union([zod.object({
+  "id": zod.number(),
+  "title": zod.string(),
+  "type": zod.enum(['homework', 'exam', 'event', 'study_block', 'note']),
+  "subject": zod.string().nullish(),
+  "date": zod.string().describe('Calendar date YYYY-MM-DD this item belongs to'),
+  "startTime": zod.string().nullish().describe('24h time HH:mm'),
+  "endTime": zod.string().nullish().describe('24h time HH:mm'),
+  "priority": zod.enum(['low', 'medium', 'high']),
+  "completed": zod.boolean(),
+  "notes": zod.string().nullish(),
+  "createdAt": zod.coerce.date()
+}),zod.null()]),
+  "createdAt": zod.coerce.date()
+})
+export const ListSubjectsResponse = zod.array(ListSubjectsResponseItem)
+
+
+/**
+ * @summary Create a subject
+ */
+
+
+
+
+export const CreateSubjectBody = zod.object({
+  "name": zod.string().min(1),
+  "emoji": zod.string().min(1)
+})
+
+export const CreateSubjectResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "emoji": zod.string(),
+  "masteryPercent": zod.number(),
+  "masteryLabel": zod.string(),
+  "notesCount": zod.number(),
+  "filesCount": zod.number(),
+  "upcomingItem": zod.union([zod.object({
+  "id": zod.number(),
+  "title": zod.string(),
+  "type": zod.enum(['homework', 'exam', 'event', 'study_block', 'note']),
+  "subject": zod.string().nullish(),
+  "date": zod.string().describe('Calendar date YYYY-MM-DD this item belongs to'),
+  "startTime": zod.string().nullish().describe('24h time HH:mm'),
+  "endTime": zod.string().nullish().describe('24h time HH:mm'),
+  "priority": zod.enum(['low', 'medium', 'high']),
+  "completed": zod.boolean(),
+  "notes": zod.string().nullish(),
+  "createdAt": zod.coerce.date()
+}),zod.null()]),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Get a single subject
+ */
+export const GetSubjectParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetSubjectResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "emoji": zod.string(),
+  "masteryPercent": zod.number(),
+  "masteryLabel": zod.string(),
+  "notesCount": zod.number(),
+  "filesCount": zod.number(),
+  "upcomingItem": zod.union([zod.object({
+  "id": zod.number(),
+  "title": zod.string(),
+  "type": zod.enum(['homework', 'exam', 'event', 'study_block', 'note']),
+  "subject": zod.string().nullish(),
+  "date": zod.string().describe('Calendar date YYYY-MM-DD this item belongs to'),
+  "startTime": zod.string().nullish().describe('24h time HH:mm'),
+  "endTime": zod.string().nullish().describe('24h time HH:mm'),
+  "priority": zod.enum(['low', 'medium', 'high']),
+  "completed": zod.boolean(),
+  "notes": zod.string().nullish(),
+  "createdAt": zod.coerce.date()
+}),zod.null()]),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Update a subject (name, emoji, mastery)
+ */
+export const UpdateSubjectParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+
+export const updateSubjectBodyMasteryPercentMin = 0;
+export const updateSubjectBodyMasteryPercentMax = 100;
+
+
+
+export const UpdateSubjectBody = zod.object({
+  "name": zod.string().min(1).optional(),
+  "emoji": zod.string().min(1).optional(),
+  "masteryPercent": zod.number().min(updateSubjectBodyMasteryPercentMin).max(updateSubjectBodyMasteryPercentMax).optional()
+})
+
+export const UpdateSubjectResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "emoji": zod.string(),
+  "masteryPercent": zod.number(),
+  "masteryLabel": zod.string(),
+  "notesCount": zod.number(),
+  "filesCount": zod.number(),
+  "upcomingItem": zod.union([zod.object({
+  "id": zod.number(),
+  "title": zod.string(),
+  "type": zod.enum(['homework', 'exam', 'event', 'study_block', 'note']),
+  "subject": zod.string().nullish(),
+  "date": zod.string().describe('Calendar date YYYY-MM-DD this item belongs to'),
+  "startTime": zod.string().nullish().describe('24h time HH:mm'),
+  "endTime": zod.string().nullish().describe('24h time HH:mm'),
+  "priority": zod.enum(['low', 'medium', 'high']),
+  "completed": zod.boolean(),
+  "notes": zod.string().nullish(),
+  "createdAt": zod.coerce.date()
+}),zod.null()]),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Delete a subject and its notes/files
+ */
+export const DeleteSubjectParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteSubjectResponse = zod.void()
+
+
+/**
+ * @summary Progress + recent activity for a subject workspace
+ */
+export const GetSubjectSummaryParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetSubjectSummaryResponse = zod.object({
+  "studyMinutesTotal": zod.number(),
+  "tasksCompleted": zod.number(),
+  "tasksTotal": zod.number(),
+  "recentActivity": zod.array(zod.object({
+  "kind": zod.enum(['note', 'file', 'study_session', 'planner_item']),
+  "title": zod.string(),
+  "emoji": zod.string(),
+  "timestamp": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary List notes for a subject
+ */
+export const ListSubjectNotesParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const ListSubjectNotesResponseItem = zod.object({
+  "id": zod.number(),
+  "subjectId": zod.number(),
+  "title": zod.string(),
+  "content": zod.string(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+export const ListSubjectNotesResponse = zod.array(ListSubjectNotesResponseItem)
+
+
+/**
+ * @summary Create a note for a subject
+ */
+export const CreateSubjectNoteParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+
+
+export const CreateSubjectNoteBody = zod.object({
+  "title": zod.string().min(1),
+  "content": zod.string().optional()
+})
+
+export const CreateSubjectNoteResponse = zod.object({
+  "id": zod.number(),
+  "subjectId": zod.number(),
+  "title": zod.string(),
+  "content": zod.string(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Update a subject note
+ */
+export const UpdateSubjectNoteParams = zod.object({
+  "id": zod.coerce.number(),
+  "noteId": zod.coerce.number()
+})
+
+
+
+
+export const UpdateSubjectNoteBody = zod.object({
+  "title": zod.string().min(1),
+  "content": zod.string().optional()
+})
+
+export const UpdateSubjectNoteResponse = zod.object({
+  "id": zod.number(),
+  "subjectId": zod.number(),
+  "title": zod.string(),
+  "content": zod.string(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Delete a subject note
+ */
+export const DeleteSubjectNoteParams = zod.object({
+  "id": zod.coerce.number(),
+  "noteId": zod.coerce.number()
+})
+
+export const DeleteSubjectNoteResponse = zod.void()
+
+
+/**
+ * @summary List files for a subject
+ */
+export const ListSubjectFilesParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const ListSubjectFilesResponseItem = zod.object({
+  "id": zod.number(),
+  "subjectId": zod.number(),
+  "fileName": zod.string(),
+  "objectPath": zod.string(),
+  "contentType": zod.string(),
+  "sizeBytes": zod.number(),
+  "createdAt": zod.coerce.date()
+})
+export const ListSubjectFilesResponse = zod.array(ListSubjectFilesResponseItem)
+
+
+/**
+ * @summary Record metadata for an uploaded file
+ */
+export const CreateSubjectFileParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+
+
+export const createSubjectFileBodySizeBytesMin = 0;
+
+
+
+export const CreateSubjectFileBody = zod.object({
+  "fileName": zod.string().min(1),
+  "objectPath": zod.string().min(1),
+  "contentType": zod.string().min(1),
+  "sizeBytes": zod.number().min(createSubjectFileBodySizeBytesMin)
+})
+
+export const CreateSubjectFileResponse = zod.object({
+  "id": zod.number(),
+  "subjectId": zod.number(),
+  "fileName": zod.string(),
+  "objectPath": zod.string(),
+  "contentType": zod.string(),
+  "sizeBytes": zod.number(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Delete a subject file
+ */
+export const DeleteSubjectFileParams = zod.object({
+  "id": zod.coerce.number(),
+  "fileId": zod.coerce.number()
+})
+
+export const DeleteSubjectFileResponse = zod.void()
+
+
+/**
+ * Returns a presigned GCS URL for direct upload. The client sends JSON
+ * metadata here, then uploads the file directly to the returned URL.
+ * @summary Request a presigned URL for file upload
+ */
+
+
+
+
+
+export const RequestUploadUrlBody = zod.object({
+  "name": zod.string().min(1).describe('Original file name.'),
+  "size": zod.number().min(1).describe('File size in bytes.'),
+  "contentType": zod.string().min(1).describe('MIME type of the file (e.g. image\/jpeg).')
+})
+
+
+
+
+
+
+export const RequestUploadUrlResponse = zod.object({
+  "uploadURL": zod.string().describe('Presigned GCS URL for PUT upload.'),
+  "objectPath": zod.string().describe('Normalized object path (e.g. \/objects\/uploads\/uuid). Store this in your database.'),
+  "metadata": zod.object({
+  "name": zod.string().min(1).describe('Original file name.'),
+  "size": zod.number().min(1).describe('File size in bytes.'),
+  "contentType": zod.string().min(1).describe('MIME type of the file (e.g. image\/jpeg).')
+}).optional()
+})
+
+
+/**
+ * @summary Serve an object entity from PRIVATE_OBJECT_DIR
+ */
+export const GetStorageObjectParams = zod.object({
+  "objectPath": zod.coerce.string().describe('Object path within the private object dir (e.g. uploads\/some-uuid).')
+})
+
+export const GetStorageObjectResponse = zod.unknown()
+
+

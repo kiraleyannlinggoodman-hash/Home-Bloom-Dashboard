@@ -18,6 +18,10 @@ tags:
     description: Logged focus/study sessions
   - name: quotes
     description: Daily motivational quotes
+  - name: subjects
+    description: Subject binders (notes, files, mastery, progress)
+  - name: Storage
+    description: Object storage upload and serving endpoints.
 paths:
   /healthz:
     get:
@@ -165,6 +169,335 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Quote"
+
+  /subjects:
+    get:
+      operationId: listSubjects
+      tags: [subjects]
+      summary: List all subjects with card summary fields
+      responses:
+        "200":
+          description: List of subjects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Subject"
+    post:
+      operationId: createSubject
+      tags: [subjects]
+      summary: Create a subject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubjectInput"
+      responses:
+        "201":
+          description: Created subject
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Subject"
+
+  /subjects/{id}:
+    get:
+      operationId: getSubject
+      tags: [subjects]
+      summary: Get a single subject
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Subject
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Subject"
+    patch:
+      operationId: updateSubject
+      tags: [subjects]
+      summary: Update a subject (name, emoji, mastery)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubjectUpdate"
+      responses:
+        "200":
+          description: Updated subject
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Subject"
+    delete:
+      operationId: deleteSubject
+      tags: [subjects]
+      summary: Delete a subject and its notes/files
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /subjects/{id}/summary:
+    get:
+      operationId: getSubjectSummary
+      tags: [subjects]
+      summary: Progress + recent activity for a subject workspace
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Subject summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubjectSummary"
+
+  /subjects/{id}/notes:
+    get:
+      operationId: listSubjectNotes
+      tags: [subjects]
+      summary: List notes for a subject
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of notes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SubjectNote"
+    post:
+      operationId: createSubjectNote
+      tags: [subjects]
+      summary: Create a note for a subject
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubjectNoteInput"
+      responses:
+        "201":
+          description: Created note
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubjectNote"
+
+  /subjects/{id}/notes/{noteId}:
+    patch:
+      operationId: updateSubjectNote
+      tags: [subjects]
+      summary: Update a subject note
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: noteId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubjectNoteInput"
+      responses:
+        "200":
+          description: Updated note
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubjectNote"
+    delete:
+      operationId: deleteSubjectNote
+      tags: [subjects]
+      summary: Delete a subject note
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: noteId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /subjects/{id}/files:
+    get:
+      operationId: listSubjectFiles
+      tags: [subjects]
+      summary: List files for a subject
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of files
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SubjectFile"
+    post:
+      operationId: createSubjectFile
+      tags: [subjects]
+      summary: Record metadata for an uploaded file
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubjectFileInput"
+      responses:
+        "201":
+          description: Created file record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubjectFile"
+
+  /subjects/{id}/files/{fileId}:
+    delete:
+      operationId: deleteSubjectFile
+      tags: [subjects]
+      summary: Delete a subject file
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: fileId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /storage/uploads/request-url:
+    post:
+      tags: [Storage]
+      operationId: requestUploadUrl
+      summary: Request a presigned URL for file upload
+      description: |
+        Returns a presigned GCS URL for direct upload. The client sends JSON
+        metadata here, then uploads the file directly to the returned URL.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UploadUrlRequest"
+      responses:
+        "200":
+          description: Presigned upload URL generated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadUrlResponse"
+        "400":
+          description: Missing or invalid required fields.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "500":
+          description: Failed to generate upload URL.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /storage/objects/{objectPath}:
+    get:
+      tags: [Storage]
+      operationId: getStorageObject
+      summary: Serve an object entity from PRIVATE_OBJECT_DIR
+      parameters:
+        - name: objectPath
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "Object path within the private object dir (e.g. uploads/some-uuid)."
+      responses:
+        "200":
+          description: Object content streamed with correct Content-Type.
+          content:
+            "*/*":
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: Object not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "500":
+          description: Failed to serve object.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
 
 components:
   schemas:
@@ -339,3 +672,222 @@ components:
           type: string
         author:
           type: ["string", "null"]
+
+    Subject:
+      type: object
+      required:
+        - id
+        - name
+        - emoji
+        - masteryPercent
+        - masteryLabel
+        - notesCount
+        - filesCount
+        - upcomingItem
+        - createdAt
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        emoji:
+          type: string
+        masteryPercent:
+          type: integer
+        masteryLabel:
+          type: string
+        notesCount:
+          type: integer
+        filesCount:
+          type: integer
+        upcomingItem:
+          oneOf:
+            - $ref: "#/components/schemas/PlannerItem"
+            - type: "null"
+        createdAt:
+          type: string
+          format: date-time
+
+    SubjectInput:
+      type: object
+      required:
+        - name
+        - emoji
+      properties:
+        name:
+          type: string
+          minLength: 1
+        emoji:
+          type: string
+          minLength: 1
+
+    SubjectUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        emoji:
+          type: string
+          minLength: 1
+        masteryPercent:
+          type: integer
+          minimum: 0
+          maximum: 100
+
+    SubjectActivityItem:
+      type: object
+      required:
+        - kind
+        - title
+        - emoji
+        - timestamp
+      properties:
+        kind:
+          type: string
+          enum: [note, file, study_session, planner_item]
+        title:
+          type: string
+        emoji:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+    SubjectSummary:
+      type: object
+      required:
+        - studyMinutesTotal
+        - tasksCompleted
+        - tasksTotal
+        - recentActivity
+      properties:
+        studyMinutesTotal:
+          type: integer
+        tasksCompleted:
+          type: integer
+        tasksTotal:
+          type: integer
+        recentActivity:
+          type: array
+          items:
+            $ref: "#/components/schemas/SubjectActivityItem"
+
+    SubjectNote:
+      type: object
+      required:
+        - id
+        - subjectId
+        - title
+        - content
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: integer
+        subjectId:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    SubjectNoteInput:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 1
+        content:
+          type: string
+
+    SubjectFile:
+      type: object
+      required:
+        - id
+        - subjectId
+        - fileName
+        - objectPath
+        - contentType
+        - sizeBytes
+        - createdAt
+      properties:
+        id:
+          type: integer
+        subjectId:
+          type: integer
+        fileName:
+          type: string
+        objectPath:
+          type: string
+        contentType:
+          type: string
+        sizeBytes:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+
+    SubjectFileInput:
+      type: object
+      required:
+        - fileName
+        - objectPath
+        - contentType
+        - sizeBytes
+      properties:
+        fileName:
+          type: string
+          minLength: 1
+        objectPath:
+          type: string
+          minLength: 1
+        contentType:
+          type: string
+          minLength: 1
+        sizeBytes:
+          type: integer
+          minimum: 0
+
+    UploadUrlRequest:
+      type: object
+      required: [name, size, contentType]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: Original file name.
+        size:
+          type: integer
+          minimum: 1
+          description: File size in bytes.
+        contentType:
+          type: string
+          minLength: 1
+          description: MIME type of the file (e.g. image/jpeg).
+    UploadUrlResponse:
+      type: object
+      required: [uploadURL, objectPath]
+      properties:
+        uploadURL:
+          type: string
+          description: Presigned GCS URL for PUT upload.
+        objectPath:
+          type: string
+          description: Normalized object path (e.g. /objects/uploads/uuid). Store this in your database.
+        metadata:
+          $ref: "#/components/schemas/UploadUrlRequest"
+    ErrorEnvelope:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string

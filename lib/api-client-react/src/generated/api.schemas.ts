@@ -112,6 +112,127 @@ export interface Quote {
   author?: string | null;
 }
 
+export interface Subject {
+  id: number;
+  name: string;
+  emoji: string;
+  masteryPercent: number;
+  masteryLabel: string;
+  notesCount: number;
+  filesCount: number;
+  upcomingItem: PlannerItem | null;
+  createdAt: string;
+}
+
+export interface SubjectInput {
+  /** @minLength 1 */
+  name: string;
+  /** @minLength 1 */
+  emoji: string;
+}
+
+export interface SubjectUpdate {
+  /** @minLength 1 */
+  name?: string;
+  /** @minLength 1 */
+  emoji?: string;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  masteryPercent?: number;
+}
+
+export type SubjectActivityItemKind = typeof SubjectActivityItemKind[keyof typeof SubjectActivityItemKind];
+
+
+export const SubjectActivityItemKind = {
+  note: 'note',
+  file: 'file',
+  study_session: 'study_session',
+  planner_item: 'planner_item',
+} as const;
+
+export interface SubjectActivityItem {
+  kind: SubjectActivityItemKind;
+  title: string;
+  emoji: string;
+  timestamp: string;
+}
+
+export interface SubjectSummary {
+  studyMinutesTotal: number;
+  tasksCompleted: number;
+  tasksTotal: number;
+  recentActivity: SubjectActivityItem[];
+}
+
+export interface SubjectNote {
+  id: number;
+  subjectId: number;
+  title: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SubjectNoteInput {
+  /** @minLength 1 */
+  title: string;
+  content?: string;
+}
+
+export interface SubjectFile {
+  id: number;
+  subjectId: number;
+  fileName: string;
+  objectPath: string;
+  contentType: string;
+  sizeBytes: number;
+  createdAt: string;
+}
+
+export interface SubjectFileInput {
+  /** @minLength 1 */
+  fileName: string;
+  /** @minLength 1 */
+  objectPath: string;
+  /** @minLength 1 */
+  contentType: string;
+  /** @minimum 0 */
+  sizeBytes: number;
+}
+
+export interface UploadUrlRequest {
+  /**
+     * Original file name.
+     * @minLength 1
+     */
+  name: string;
+  /**
+     * File size in bytes.
+     * @minimum 1
+     */
+  size: number;
+  /**
+     * MIME type of the file (e.g. image/jpeg).
+     * @minLength 1
+     */
+  contentType: string;
+}
+
+export interface UploadUrlResponse {
+  /** Presigned GCS URL for PUT upload. */
+  uploadURL: string;
+  /** Normalized object path (e.g. /objects/uploads/uuid). Store this in your database. */
+  objectPath: string;
+  metadata?: UploadUrlRequest;
+}
+
+export interface ErrorEnvelope {
+  error: string;
+}
+
 export type ListPlannerItemsParams = {
 /**
  * Inclusive start date (YYYY-MM-DD)

@@ -7,6 +7,7 @@
  */
 
 export * from './dashboardSummary';
+export * from './errorEnvelope';
 export * from './healthStatus';
 export * from './listPlannerItemsParams';
 export * from './plannerItem';
@@ -17,3 +18,15 @@ export * from './plannerItemUpdate';
 export * from './quote';
 export * from './studySession';
 export * from './studySessionInput';
+export * from './subject';
+export * from './subjectActivityItem';
+export * from './subjectActivityItemKind';
+export * from './subjectFile';
+export * from './subjectFileInput';
+export * from './subjectInput';
+export * from './subjectNote';
+export * from './subjectNoteInput';
+export * from './subjectSummary';
+export * from './subjectUpdate';
+export * from './uploadUrlRequest';
+export * from './uploadUrlResponse';
