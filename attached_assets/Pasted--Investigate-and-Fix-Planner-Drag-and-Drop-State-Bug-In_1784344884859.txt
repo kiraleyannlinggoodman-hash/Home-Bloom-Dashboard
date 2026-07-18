@@ -1,0 +1,54 @@
+🐛 Investigate and Fix Planner Drag-and-Drop State Bug
+
+Investigate and permanently fix a drag-and-drop state bug in Bloom's Planner/Timeline.
+
+Current Behavior
+
+After dragging a planner item, the interface sometimes becomes stuck in a drag state.
+
+Symptoms
+The floating 🗑️ Delete drop target remains visible after the drag operation has finished.
+The dragged planner item may appear duplicated or overlap with itself.
+The planner does not always return to its normal state after dropping or cancelling a drag.
+This issue occurs intermittently and should be fully investigated.
+Expected Behavior
+
+Whenever a drag operation ends—whether the item is dropped successfully or the drag is cancelled—the interface should immediately return to its normal state.
+
+The application should:
+
+Remove the Delete drop target.
+Remove any drag overlay or ghost element.
+Display only one copy of each planner item.
+Correctly re-render the planner.
+Leave no duplicated, overlapping, or misplaced items.
+Reset every drag-related state variable.
+Root Cause Investigation
+
+Please investigate the entire drag-and-drop implementation rather than only fixing the visible UI.
+
+Review and verify:
+
+isDragging
+activeId
+draggedItem
+dragOverlay
+onDragStart
+onDragMove
+onDragEnd
+onDragCancel
+State cleanup after every drag operation
+Drag overlay mounting and unmounting
+React state updates and re-renders
+Any stale state or duplicate rendering
+Any components that fail to unmount after dragging
+
+Ensure that every possible exit path (drop, cancel, failed drop, or interrupted drag) properly resets the drag state.
+
+Requirements
+Fix the underlying cause, not just the symptoms.
+Preserve all existing planner functionality.
+Ensure dragging, dropping, deleting, and reordering continue to work correctly.
+Do not modify Bloom's visual design, layout, styling, animations, or user experience unless required to fix the bug.
+Test the planner by repeatedly dragging, dropping, deleting, and cancelling drag operations on both desktop and mobile.
+Only consider the task complete after confirming the bug can no longer be reproduced.

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { format, addDays, startOfWeek, endOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isToday, isSameMonth, parseISO } from "date-fns";
-import { motion, AnimatePresence, useAnimation, useMotionValue } from "framer-motion";
+import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   useListPlannerItems,
@@ -356,87 +356,152 @@ function SwipeableItem({ item }: { item: PlannerItem }) {
   const queryClient = useQueryClient();
   const updateItem = useUpdatePlannerItem();
   const deleteItem = useDeletePlannerItem();
-  
-  const [isDeleting, setIsDeleting] = useState(false);
-  const x = useMotionValue(0);
-  const controls = useAnimation();
 
-  const handleToggle = () => {
+  const [isDeleting, setIsDeleting] = useState(false);
+  // isDragging gates the hint overlay — only visible during an active drag
+  const [isDragging, setIsDragging] = useState(false);
+  const controls = useAnimation();
+  // isBusy prevents double-fires while an animation/mutation is in progress
+  const isBusy = React.useRef(false);
+
+  const invalidate = React.useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: getListPlannerItemsQueryKey() });
+    queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
+  }, [queryClient]);
+
+  const handleToggle = React.useCallback(() => {
     updateItem.mutate(
       { id: item.id, data: { completed: !item.completed } },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: getListPlannerItemsQueryKey() });
-          queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
-        }
-      }
+      { onSuccess: invalidate }
     );
-  };
+  }, [item.id, item.completed, updateItem, invalidate]);
 
-  const handleDelete = () => {
+  const handleDelete = React.useCallback(() => {
     setIsDeleting(true);
-    deleteItem.mutate(
-      { id: item.id },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: getListPlannerItemsQueryKey() });
-          queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() });
-        }
+    deleteItem.mutate({ id: item.id }, { onSuccess: invalidate });
+  }, [item.id, deleteItem, invalidate]);
+
+  const resetPosition = React.useCallback(() => {
+    controls.start({
+      x: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 400, damping: 40 },
+    });
+  }, [controls]);
+
+  const handleDragStart = React.useCallback(() => {
+    setIsDragging(true);
+  }, []);
+
+  const handleDragEnd = React.useCallback(
+    async (_e: PointerEvent, info: { offset: { x: number }; velocity: { x: number } }) => {
+      // Guard against re-entry
+      if (isBusy.current) {
+        setIsDragging(false);
+        resetPosition();
+        return;
       }
-    );
-  };
 
-  const handleDragEnd = async (e: any, info: any) => {
-    const offset = info.offset.x;
-    const velocity = info.velocity.x;
+      const { offset, velocity } = info;
 
-    if (offset > 100 || velocity > 500) {
-      handleToggle();
-      controls.start({ x: 0 });
-    } else if (offset < -100 || velocity < -500) {
-      await controls.start({ x: -500, opacity: 0 });
-      handleDelete();
-    } else {
-      controls.start({ x: 0 });
-    }
-  };
+      try {
+        isBusy.current = true;
+
+        if (offset.x > 100 || velocity.x > 500) {
+          // Swipe right → complete
+          await controls.start({ x: 0, transition: { type: "spring", stiffness: 400, damping: 40 } });
+          handleToggle();
+        } else if (offset.x < -100 || velocity.x < -500) {
+          // Swipe left → delete
+          await controls.start({ x: -500, opacity: 0, transition: { duration: 0.25, ease: "easeIn" } });
+          handleDelete();
+          return; // component unmounts; skip finally reset
+        } else {
+          // Not past threshold → snap back
+          resetPosition();
+        }
+      } catch {
+        resetPosition();
+      } finally {
+        isBusy.current = false;
+        setIsDragging(false);
+      }
+    },
+    [controls, handleToggle, handleDelete, resetPosition]
+  );
+
+  // Safety net: if pointer is lost mid-drag (e.g. touch cancel on mobile),
+  // framer-motion fires onDragEnd in most cases, but we also reset on pointer up
+  // at the window level to catch any edge cases.
+  React.useEffect(() => {
+    if (!isDragging) return;
+    const cleanup = () => {
+      // Give framer-motion's own onDragEnd a tick to fire first
+      setTimeout(() => {
+        if (!isBusy.current) {
+          setIsDragging(false);
+          resetPosition();
+        }
+      }, 100);
+    };
+    window.addEventListener("pointerup", cleanup, { once: true });
+    window.addEventListener("pointercancel", cleanup, { once: true });
+    return () => {
+      window.removeEventListener("pointerup", cleanup);
+      window.removeEventListener("pointercancel", cleanup);
+    };
+  }, [isDragging, resetPosition]);
 
   if (isDeleting) return null;
 
   const conf = TYPE_CONFIG[item.type];
-  const priorityColor = 
-    item.priority === 'high' ? 'text-rose-500' :
-    item.priority === 'medium' ? 'text-amber-500' :
-    'text-emerald-500';
+  const priorityColor =
+    item.priority === "high" ? "text-rose-500" :
+    item.priority === "medium" ? "text-amber-500" :
+    "text-emerald-500";
 
   return (
     <div className="relative pl-6 md:pl-10">
       {/* Timeline dot */}
-      <div className={cn("absolute -left-[11px] md:-left-[11px] top-5 w-5 h-5 rounded-full border-[5px] border-background z-10", conf.dot)} />
+      <div className={cn("absolute -left-[11px] top-5 w-5 h-5 rounded-full border-[5px] border-background z-10", conf.dot)} />
 
-      {/* Swipe Container */}
+      {/* Swipe container */}
       <div className="relative rounded-[1.5rem] overflow-hidden group">
-        <div className="absolute inset-0 flex justify-between items-center px-6">
-          <div className="text-emerald-600 flex items-center gap-2 font-bold text-[14px]"><span>✅</span> Complete</div>
-          <div className="text-rose-600 flex items-center gap-2 font-bold text-[14px]"><span>🗑️</span> Delete</div>
-        </div>
-        
+        {/* Hint overlay — ONLY rendered while dragging to prevent stuck visibility */}
+        {isDragging && (
+          <div className="absolute inset-0 flex justify-between items-center px-6 pointer-events-none">
+            <div className="text-emerald-600 flex items-center gap-2 font-bold text-[14px]">
+              <span>✅</span> Complete
+            </div>
+            <div className="text-rose-600 flex items-center gap-2 font-bold text-[14px]">
+              <span>🗑️</span> Delete
+            </div>
+          </div>
+        )}
+
         <motion.div
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={0.5}
+          dragMomentum={false}
+          onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
           animate={controls}
-          style={{ x }}
           className={cn(
-            "relative bg-card rounded-[1.5rem] p-5 shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-transparent flex flex-col md:flex-row md:items-center gap-4 z-10 transition-colors",
+            "relative bg-card rounded-[1.5rem] p-5 shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-transparent flex flex-col md:flex-row md:items-center gap-4 z-10 cursor-grab active:cursor-grabbing",
             item.completed && "opacity-60 bg-secondary/20"
           )}
         >
-          {/* Desktop Actions */}
+          {/* Desktop hover actions */}
           <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity hidden md:flex gap-2 bg-card/80 backdrop-blur-sm p-1 rounded-full shadow-sm border border-border/50">
-            <button onClick={handleToggle} className="w-8 h-8 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center hover:scale-110 transition-transform">✅</button>
-            <button onClick={handleDelete} className="w-8 h-8 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center hover:scale-110 transition-transform">🗑️</button>
+            <button
+              onClick={(e) => { e.stopPropagation(); handleToggle(); }}
+              className="w-8 h-8 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center hover:scale-110 transition-transform"
+            >✅</button>
+            <button
+              onClick={(e) => { e.stopPropagation(); handleDelete(); }}
+              className="w-8 h-8 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center hover:scale-110 transition-transform"
+            >🗑️</button>
           </div>
 
           <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0", conf.bg, conf.text)}>
@@ -445,14 +510,19 @@ function SwipeableItem({ item }: { item: PlannerItem }) {
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 mb-1">
-              <h4 className={cn("font-medium text-[16px] truncate", item.completed && "line-through")}>{item.title}</h4>
-              <div className={cn("text-[10px] w-2 h-2 rounded-full", priorityColor)} title={`Priority: ${item.priority}`} />
+              <h4 className={cn("font-medium text-[16px] truncate", item.completed && "line-through")}>
+                {item.title}
+              </h4>
+              <div
+                className={cn("text-[10px] w-2 h-2 rounded-full shrink-0", priorityColor)}
+                title={`Priority: ${item.priority}`}
+              />
             </div>
-            
+
             <div className="flex flex-wrap items-center gap-3 text-[13px] font-medium text-muted-foreground">
               {item.startTime && (
                 <span className="flex items-center gap-1.5 text-primary">
-                  <span>⏱️</span> {item.startTime} {item.endTime ? `- ${item.endTime}` : ''}
+                  <span>⏱️</span> {item.startTime}{item.endTime ? ` – ${item.endTime}` : ""}
                 </span>
               )}
               {item.subject && (

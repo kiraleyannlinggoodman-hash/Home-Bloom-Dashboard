@@ -4,6 +4,8 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
 import Dashboard from '@/pages/dashboard';
 import Planner from '@/pages/planner';
+import Subjects from '@/pages/subjects';
+import SubjectWorkspace from '@/pages/subject-workspace';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
 
 const queryClient = new QueryClient();
@@ -13,6 +15,10 @@ function Router() {
     <Switch>
       <Route path="/" component={Dashboard} />
       <Route path="/planner" component={Planner} />
+      <Route path="/subjects" component={Subjects} />
+      <Route path="/subjects/:id">
+        {(params) => <SubjectWorkspace id={Number(params.id)} />}
+      </Route>
       <Route component={NotFound} />
     </Switch>
   );
