@@ -233,6 +233,95 @@ export interface ErrorEnvelope {
   error: string;
 }
 
+export type FocusSessionSessionType = typeof FocusSessionSessionType[keyof typeof FocusSessionSessionType];
+
+
+export const FocusSessionSessionType = {
+  homework: 'homework',
+  study: 'study',
+  revision: 'revision',
+  practice: 'practice',
+  other: 'other',
+} as const;
+
+export interface FocusSession {
+  id: number;
+  name: string;
+  subject?: string | null;
+  sessionType: FocusSessionSessionType;
+  notes?: string | null;
+  startedAt: string;
+  endedAt?: string | null;
+  durationMinutes?: number | null;
+  /**
+     * @minimum 1
+     * @maximum 10
+     */
+  focusQuality?: number | null;
+  wentWell?: string | null;
+  distracted?: string | null;
+  reflectionNotes?: string | null;
+  createdAt: string;
+}
+
+export type FocusSessionInputSessionType = typeof FocusSessionInputSessionType[keyof typeof FocusSessionInputSessionType];
+
+
+export const FocusSessionInputSessionType = {
+  homework: 'homework',
+  study: 'study',
+  revision: 'revision',
+  practice: 'practice',
+  other: 'other',
+} as const;
+
+export interface FocusSessionInput {
+  /** @minLength 1 */
+  name: string;
+  subject?: string;
+  sessionType: FocusSessionInputSessionType;
+  notes?: string;
+}
+
+export interface FocusSessionEndInput {
+  /** @minimum 0 */
+  durationMinutes: number;
+  /**
+     * @minimum 1
+     * @maximum 10
+     */
+  focusQuality?: number;
+  wentWell?: string;
+  distracted?: string;
+  reflectionNotes?: string;
+}
+
+export type FocusStatsByDayItem = {
+  date: string;
+  minutes: number;
+};
+
+export type FocusStatsBySubjectItem = {
+  subject: string;
+  minutes: number;
+};
+
+export type FocusStatsByWeekItem = {
+  week: string;
+  minutes: number;
+};
+
+export interface FocusStats {
+  totalMinutes: number;
+  totalSessions: number;
+  avgLength: number;
+  avgFocusRating?: number | null;
+  longestSession: number;
+  byDay: FocusStatsByDayItem[];
+  bySubject: FocusStatsBySubjectItem[];
+  byWeek: FocusStatsByWeekItem[];
+}
+
 export type ListPlannerItemsParams = {
 /**
  * Inclusive start date (YYYY-MM-DD)
@@ -244,4 +333,27 @@ from?: string;
 to?: string;
 type?: PlannerItemType;
 };
+
+export type ListFocusSessionsParams = {
+/**
+ * Filter by session name (partial match)
+ */
+search?: string;
+/**
+ * Filter by subject name (exact)
+ */
+subject?: string;
+/**
+ * Sort by date ascending or descending (default desc)
+ */
+sort?: ListFocusSessionsSort;
+};
+
+export type ListFocusSessionsSort = typeof ListFocusSessionsSort[keyof typeof ListFocusSessionsSort];
+
+
+export const ListFocusSessionsSort = {
+  asc: 'asc',
+  desc: 'desc',
+} as const;
 

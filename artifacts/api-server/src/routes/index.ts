@@ -6,6 +6,7 @@ import studySessionsRouter from "./studySessions";
 import quotesRouter from "./quotes";
 import subjectsRouter from "./subjects";
 import storageRouter from "./storage";
+import focusSessionsRouter from "./focusSessions";
 
 const router: IRouter = Router();
 
@@ -16,5 +17,6 @@ router.use(studySessionsRouter);
 router.use(quotesRouter);
 router.use(subjectsRouter);
 router.use(storageRouter);
+router.use(focusSessionsRouter);
 
 export default router;

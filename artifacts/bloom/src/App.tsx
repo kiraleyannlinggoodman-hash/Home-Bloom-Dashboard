@@ -6,6 +6,7 @@ import Dashboard from '@/pages/dashboard';
 import Planner from '@/pages/planner';
 import Subjects from '@/pages/subjects';
 import SubjectWorkspace from '@/pages/subject-workspace';
+import FocusTracker from '@/pages/focus';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
 
 const queryClient = new QueryClient();
@@ -19,6 +20,7 @@ function Router() {
       <Route path="/subjects/:id">
         {(params) => <SubjectWorkspace id={Number(params.id)} />}
       </Route>
+      <Route path="/focus" component={FocusTracker} />
       <Route component={NotFound} />
     </Switch>
   );

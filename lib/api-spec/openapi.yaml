@@ -22,6 +22,8 @@ tags:
     description: Subject binders (notes, files, mastery, progress)
   - name: Storage
     description: Object storage upload and serving endpoints.
+  - name: focus-sessions
+    description: Bloom Focus Tracker sessions, history, and statistics
 paths:
   /healthz:
     get:
@@ -499,6 +501,110 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorEnvelope"
 
+  /focus-sessions:
+    get:
+      operationId: listFocusSessions
+      tags: [focus-sessions]
+      summary: List completed focus sessions
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Filter by session name (partial match)
+        - name: subject
+          in: query
+          schema:
+            type: string
+          description: Filter by subject name (exact)
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+          description: Sort by date ascending or descending (default desc)
+      responses:
+        "200":
+          description: Array of completed focus sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FocusSession"
+    post:
+      operationId: startFocusSession
+      tags: [focus-sessions]
+      summary: Start a new focus session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FocusSessionInput"
+      responses:
+        "201":
+          description: Created session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FocusSession"
+
+  /focus-sessions/stats:
+    get:
+      operationId: getFocusStats
+      tags: [focus-sessions]
+      summary: Aggregate statistics for the Focus Tracker
+      responses:
+        "200":
+          description: Focus statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FocusStats"
+
+  /focus-sessions/{id}/end:
+    post:
+      operationId: endFocusSession
+      tags: [focus-sessions]
+      summary: End a focus session and save reflection data
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FocusSessionEndInput"
+      responses:
+        "200":
+          description: Updated session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FocusSession"
+        "404":
+          description: Session not found
+
+  /focus-sessions/{id}:
+    delete:
+      operationId: deleteFocusSession
+      tags: [focus-sessions]
+      summary: Delete a focus session
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
 components:
   schemas:
     HealthStatus:
@@ -891,3 +997,139 @@ components:
       properties:
         error:
           type: string
+
+    FocusSession:
+      type: object
+      required:
+        - id
+        - name
+        - sessionType
+        - startedAt
+        - createdAt
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        subject:
+          type: string
+          nullable: true
+        sessionType:
+          type: string
+          enum: [homework, study, revision, practice, other]
+        notes:
+          type: string
+          nullable: true
+        startedAt:
+          type: string
+          format: date-time
+        endedAt:
+          type: string
+          format: date-time
+          nullable: true
+        durationMinutes:
+          type: integer
+          nullable: true
+        focusQuality:
+          type: integer
+          minimum: 1
+          maximum: 10
+          nullable: true
+        wentWell:
+          type: string
+          nullable: true
+        distracted:
+          type: string
+          nullable: true
+        reflectionNotes:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+
+    FocusSessionInput:
+      type: object
+      required: [name, sessionType]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        subject:
+          type: string
+        sessionType:
+          type: string
+          enum: [homework, study, revision, practice, other]
+        notes:
+          type: string
+
+    FocusSessionEndInput:
+      type: object
+      required: [durationMinutes]
+      properties:
+        durationMinutes:
+          type: integer
+          minimum: 0
+        focusQuality:
+          type: integer
+          minimum: 1
+          maximum: 10
+        wentWell:
+          type: string
+        distracted:
+          type: string
+        reflectionNotes:
+          type: string
+
+    FocusStats:
+      type: object
+      required:
+        - totalMinutes
+        - totalSessions
+        - avgLength
+        - longestSession
+        - byDay
+        - bySubject
+        - byWeek
+      properties:
+        totalMinutes:
+          type: integer
+        totalSessions:
+          type: integer
+        avgLength:
+          type: integer
+        avgFocusRating:
+          type: number
+          nullable: true
+        longestSession:
+          type: integer
+        byDay:
+          type: array
+          items:
+            type: object
+            required: [date, minutes]
+            properties:
+              date:
+                type: string
+              minutes:
+                type: integer
+        bySubject:
+          type: array
+          items:
+            type: object
+            required: [subject, minutes]
+            properties:
+              subject:
+                type: string
+              minutes:
+                type: integer
+        byWeek:
+          type: array
+          items:
+            type: object
+            required: [week, minutes]
+            properties:
+              week:
+                type: string
+              minutes:
+                type: integer

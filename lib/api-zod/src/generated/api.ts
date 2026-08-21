@@ -521,3 +521,144 @@ export const GetStorageObjectParams = zod.object({
 export const GetStorageObjectResponse = zod.unknown()
 
 
+/**
+ * @summary List completed focus sessions
+ */
+export const ListFocusSessionsQueryParams = zod.object({
+  "search": zod.coerce.string().optional().describe('Filter by session name (partial match)'),
+  "subject": zod.coerce.string().optional().describe('Filter by subject name (exact)'),
+  "sort": zod.enum(['asc', 'desc']).optional().describe('Sort by date ascending or descending (default desc)')
+})
+
+export const listFocusSessionsResponseFocusQualityMax = 10;
+
+
+
+export const ListFocusSessionsResponseItem = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "subject": zod.string().nullish(),
+  "sessionType": zod.enum(['homework', 'study', 'revision', 'practice', 'other']),
+  "notes": zod.string().nullish(),
+  "startedAt": zod.coerce.date(),
+  "endedAt": zod.coerce.date().nullish(),
+  "durationMinutes": zod.number().nullish(),
+  "focusQuality": zod.number().min(1).max(listFocusSessionsResponseFocusQualityMax).nullish(),
+  "wentWell": zod.string().nullish(),
+  "distracted": zod.string().nullish(),
+  "reflectionNotes": zod.string().nullish(),
+  "createdAt": zod.coerce.date()
+})
+export const ListFocusSessionsResponse = zod.array(ListFocusSessionsResponseItem)
+
+
+/**
+ * @summary Start a new focus session
+ */
+
+
+
+export const StartFocusSessionBody = zod.object({
+  "name": zod.string().min(1),
+  "subject": zod.string().optional(),
+  "sessionType": zod.enum(['homework', 'study', 'revision', 'practice', 'other']),
+  "notes": zod.string().optional()
+})
+
+export const startFocusSessionResponseFocusQualityMax = 10;
+
+
+
+export const StartFocusSessionResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "subject": zod.string().nullish(),
+  "sessionType": zod.enum(['homework', 'study', 'revision', 'practice', 'other']),
+  "notes": zod.string().nullish(),
+  "startedAt": zod.coerce.date(),
+  "endedAt": zod.coerce.date().nullish(),
+  "durationMinutes": zod.number().nullish(),
+  "focusQuality": zod.number().min(1).max(startFocusSessionResponseFocusQualityMax).nullish(),
+  "wentWell": zod.string().nullish(),
+  "distracted": zod.string().nullish(),
+  "reflectionNotes": zod.string().nullish(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Aggregate statistics for the Focus Tracker
+ */
+export const GetFocusStatsResponse = zod.object({
+  "totalMinutes": zod.number(),
+  "totalSessions": zod.number(),
+  "avgLength": zod.number(),
+  "avgFocusRating": zod.number().nullish(),
+  "longestSession": zod.number(),
+  "byDay": zod.array(zod.object({
+  "date": zod.string(),
+  "minutes": zod.number()
+})),
+  "bySubject": zod.array(zod.object({
+  "subject": zod.string(),
+  "minutes": zod.number()
+})),
+  "byWeek": zod.array(zod.object({
+  "week": zod.string(),
+  "minutes": zod.number()
+}))
+})
+
+
+/**
+ * @summary End a focus session and save reflection data
+ */
+export const EndFocusSessionParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const endFocusSessionBodyDurationMinutesMin = 0;
+
+export const endFocusSessionBodyFocusQualityMax = 10;
+
+
+
+export const EndFocusSessionBody = zod.object({
+  "durationMinutes": zod.number().min(endFocusSessionBodyDurationMinutesMin),
+  "focusQuality": zod.number().min(1).max(endFocusSessionBodyFocusQualityMax).optional(),
+  "wentWell": zod.string().optional(),
+  "distracted": zod.string().optional(),
+  "reflectionNotes": zod.string().optional()
+})
+
+export const endFocusSessionResponseFocusQualityMax = 10;
+
+
+
+export const EndFocusSessionResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "subject": zod.string().nullish(),
+  "sessionType": zod.enum(['homework', 'study', 'revision', 'practice', 'other']),
+  "notes": zod.string().nullish(),
+  "startedAt": zod.coerce.date(),
+  "endedAt": zod.coerce.date().nullish(),
+  "durationMinutes": zod.number().nullish(),
+  "focusQuality": zod.number().min(1).max(endFocusSessionResponseFocusQualityMax).nullish(),
+  "wentWell": zod.string().nullish(),
+  "distracted": zod.string().nullish(),
+  "reflectionNotes": zod.string().nullish(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Delete a focus session
+ */
+export const DeleteFocusSessionParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteFocusSessionResponse = zod.void()
+
+

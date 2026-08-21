@@ -1,0 +1,162 @@
+🌸 Build Bloom Focus Tracker
+
+Create a beautiful Focus Tracker page for Bloom that matches the existing soft pink, calming Bloom aesthetic. The Focus Tracker should become one of Bloom’s signature features—beautiful, calming, intuitive, and enjoyable to use, making studying feel peaceful rather than overwhelming.
+
+🎨 Design
+Soft pink Bloom color palette.
+Rounded cards with subtle shadows.
+Minimalist, elegant, and calming.
+Smooth animations and responsive design.
+Plenty of whitespace for a peaceful study environment.
+Match Bloom's existing design system and visual language.
+⏰ Cute Bloom Timer
+
+The centerpiece of the page should be a large, adorable focus timer.
+
+Design
+Large rounded timer card.
+Digital timer (HH:MM:SS).
+Soft pink gradient background.
+Bloom flower icon 🌸 above the timer.
+Gentle glowing animation while the timer is running.
+Cute floating sparkles or petals when a session starts or ends.
+Display a motivational quote beneath the timer, rotating through messages like:
+🌷 Stay focused, you're blooming.
+🌸 Small progress is still progress.
+✨ Every minute counts.
+🌼 Bloom at your own pace.
+Timer Controls
+
+Provide large rounded buttons:
+
+▶️ Start
+⏸ Pause
+▶ Resume
+⏹ End
+Timer Behavior
+
+When a session starts:
+
+Automatically record the start time.
+Start counting in real time.
+
+When paused:
+
+Freeze the timer without losing progress.
+
+When resumed:
+
+Continue where it left off.
+
+When ended:
+
+Record the end time.
+Automatically calculate the total focus duration.
+🔥 Daily Streak Badge
+
+Place the Current Daily Streak in its own small rounded card positioned in the top-right corner of the Focus Tracker page, beside the main Focus Timer.
+
+Design
+Soft pink Bloom styling.
+Small pill/rounded card with subtle shadow.
+Gentle glow effect.
+Small flame icon.
+Display either:
+🔥 7 Day Streak
+or
+🔥 7
+with "Day Streak" underneath in smaller text.
+
+This badge should act as a quick motivational indicator while remaining elegant and unobtrusive.
+
+Do not include the Daily Streak inside the statistics section at the bottom. It should remain a standalone element near the timer.
+
+📚 Start a Focus Session
+
+Before starting a session, allow users to enter:
+
+Session Name
+Subject
+Session Type:
+📖 Homework
+📚 Study
+📝 Revision
+🎯 Practice
+🌸 Other
+Optional Notes
+🌷 Session Reflection
+
+After ending a session, display a cute popup asking the user to complete a short reflection.
+
+Include:
+
+⭐ Focus Quality (1–10)
+
+Reflection Questions:
+
+What went well?
+What distracted you?
+Notes (optional)
+
+Save the completed session automatically.
+
+📊 Focus History
+
+Display previous focus sessions in a clean card or table layout showing:
+
+Session Name
+Subject
+Session Type
+Date
+Start Time
+End Time
+Duration
+Focus Rating
+
+Include:
+
+Search
+Filter by Subject
+Sort by Date
+📈 Statistics
+
+Create a beautiful statistics section near the bottom of the page.
+
+Include statistic cards for:
+
+Total Focus Hours
+Sessions Completed
+Average Session Length
+Average Focus Rating
+Longest Session
+
+Do NOT include Current Daily Streak here, as it already appears in the dedicated badge near the timer.
+
+Charts
+
+Include attractive charts showing:
+
+Focus Hours by Day
+Focus Hours by Subject
+Weekly Focus Trend
+🌸 Bloom Experience
+
+After every completed focus session, show a gentle congratulatory message such as:
+
+🌸 Amazing work! Keep blooming.
+🌷 Another step toward your goals.
+✨ Consistency creates success.
+🌼 Your focus is growing stronger every day.
+
+Use soft transitions, subtle animations, and calming interactions throughout the page so the experience feels rewarding without being distracting.
+
+💻 Technical Requirements
+Match Bloom's existing design system.
+Use reusable components where appropriate.
+Fully responsive on desktop and mobile devices.
+Persist session data using the app's existing database/storage.
+Integrate seamlessly with the rest of Bloom.
+Ensure all animations remain lightweight and smooth.
+Keep the interface clean, distraction-free, and consistent with Bloom's soft, calming design philosophy.
+
+The final result should feel like a premium, polished study companion that users genuinely enjoy returning to every day. 🌸
