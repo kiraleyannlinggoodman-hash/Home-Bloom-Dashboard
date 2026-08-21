@@ -662,3 +662,154 @@ export const DeleteFocusSessionParams = zod.object({
 export const DeleteFocusSessionResponse = zod.void()
 
 
+/**
+ * @summary List all grade rows
+ */
+
+export const listProgressGradesResponseTerm1Min = 0;
+export const listProgressGradesResponseTerm1Max = 100;
+
+export const listProgressGradesResponseTerm2Min = 0;
+export const listProgressGradesResponseTerm2Max = 100;
+
+export const listProgressGradesResponseTerm3Min = 0;
+export const listProgressGradesResponseTerm3Max = 100;
+
+export const listProgressGradesResponseTerm4Min = 0;
+export const listProgressGradesResponseTerm4Max = 100;
+
+
+
+export const ListProgressGradesResponseItem = zod.object({
+  "id": zod.number(),
+  "subject": zod.string().min(1),
+  "term1": zod.number().min(listProgressGradesResponseTerm1Min).max(listProgressGradesResponseTerm1Max).nullish(),
+  "term2": zod.number().min(listProgressGradesResponseTerm2Min).max(listProgressGradesResponseTerm2Max).nullish(),
+  "term3": zod.number().min(listProgressGradesResponseTerm3Min).max(listProgressGradesResponseTerm3Max).nullish(),
+  "term4": zod.number().min(listProgressGradesResponseTerm4Min).max(listProgressGradesResponseTerm4Max).nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+export const ListProgressGradesResponse = zod.array(ListProgressGradesResponseItem)
+
+
+/**
+ * @summary Add a subject grade row
+ */
+
+export const createProgressGradeBodyTerm1Min = 0;
+export const createProgressGradeBodyTerm1Max = 100;
+
+export const createProgressGradeBodyTerm2Min = 0;
+export const createProgressGradeBodyTerm2Max = 100;
+
+export const createProgressGradeBodyTerm3Min = 0;
+export const createProgressGradeBodyTerm3Max = 100;
+
+export const createProgressGradeBodyTerm4Min = 0;
+export const createProgressGradeBodyTerm4Max = 100;
+
+
+
+export const CreateProgressGradeBody = zod.object({
+  "subject": zod.string().min(1),
+  "term1": zod.number().min(createProgressGradeBodyTerm1Min).max(createProgressGradeBodyTerm1Max).nullish(),
+  "term2": zod.number().min(createProgressGradeBodyTerm2Min).max(createProgressGradeBodyTerm2Max).nullish(),
+  "term3": zod.number().min(createProgressGradeBodyTerm3Min).max(createProgressGradeBodyTerm3Max).nullish(),
+  "term4": zod.number().min(createProgressGradeBodyTerm4Min).max(createProgressGradeBodyTerm4Max).nullish()
+})
+
+
+export const createProgressGradeResponseTerm1Min = 0;
+export const createProgressGradeResponseTerm1Max = 100;
+
+export const createProgressGradeResponseTerm2Min = 0;
+export const createProgressGradeResponseTerm2Max = 100;
+
+export const createProgressGradeResponseTerm3Min = 0;
+export const createProgressGradeResponseTerm3Max = 100;
+
+export const createProgressGradeResponseTerm4Min = 0;
+export const createProgressGradeResponseTerm4Max = 100;
+
+
+
+export const CreateProgressGradeResponse = zod.object({
+  "id": zod.number(),
+  "subject": zod.string().min(1),
+  "term1": zod.number().min(createProgressGradeResponseTerm1Min).max(createProgressGradeResponseTerm1Max).nullish(),
+  "term2": zod.number().min(createProgressGradeResponseTerm2Min).max(createProgressGradeResponseTerm2Max).nullish(),
+  "term3": zod.number().min(createProgressGradeResponseTerm3Min).max(createProgressGradeResponseTerm3Max).nullish(),
+  "term4": zod.number().min(createProgressGradeResponseTerm4Min).max(createProgressGradeResponseTerm4Max).nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Update a grade row
+ */
+export const UpdateProgressGradeParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+export const updateProgressGradeBodyTerm1Min = 0;
+export const updateProgressGradeBodyTerm1Max = 100;
+
+export const updateProgressGradeBodyTerm2Min = 0;
+export const updateProgressGradeBodyTerm2Max = 100;
+
+export const updateProgressGradeBodyTerm3Min = 0;
+export const updateProgressGradeBodyTerm3Max = 100;
+
+export const updateProgressGradeBodyTerm4Min = 0;
+export const updateProgressGradeBodyTerm4Max = 100;
+
+
+
+export const UpdateProgressGradeBody = zod.object({
+  "subject": zod.string().min(1).optional(),
+  "term1": zod.number().min(updateProgressGradeBodyTerm1Min).max(updateProgressGradeBodyTerm1Max).nullish(),
+  "term2": zod.number().min(updateProgressGradeBodyTerm2Min).max(updateProgressGradeBodyTerm2Max).nullish(),
+  "term3": zod.number().min(updateProgressGradeBodyTerm3Min).max(updateProgressGradeBodyTerm3Max).nullish(),
+  "term4": zod.number().min(updateProgressGradeBodyTerm4Min).max(updateProgressGradeBodyTerm4Max).nullish()
+})
+
+
+export const updateProgressGradeResponseTerm1Min = 0;
+export const updateProgressGradeResponseTerm1Max = 100;
+
+export const updateProgressGradeResponseTerm2Min = 0;
+export const updateProgressGradeResponseTerm2Max = 100;
+
+export const updateProgressGradeResponseTerm3Min = 0;
+export const updateProgressGradeResponseTerm3Max = 100;
+
+export const updateProgressGradeResponseTerm4Min = 0;
+export const updateProgressGradeResponseTerm4Max = 100;
+
+
+
+export const UpdateProgressGradeResponse = zod.object({
+  "id": zod.number(),
+  "subject": zod.string().min(1),
+  "term1": zod.number().min(updateProgressGradeResponseTerm1Min).max(updateProgressGradeResponseTerm1Max).nullish(),
+  "term2": zod.number().min(updateProgressGradeResponseTerm2Min).max(updateProgressGradeResponseTerm2Max).nullish(),
+  "term3": zod.number().min(updateProgressGradeResponseTerm3Min).max(updateProgressGradeResponseTerm3Max).nullish(),
+  "term4": zod.number().min(updateProgressGradeResponseTerm4Min).max(updateProgressGradeResponseTerm4Max).nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Delete a grade row
+ */
+export const DeleteProgressGradeParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteProgressGradeResponse = zod.void()
+
+

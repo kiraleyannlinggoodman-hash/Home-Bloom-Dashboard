@@ -1,0 +1,306 @@
+# Bloom Progress Tracker — Build Prompt
+
+Build a polished **Grade Progress Tracker** for my existing Bloom study system.
+
+## Overall aesthetic
+
+Use the same visual language as Bloom:
+
+* Soft pastel pink + warm white
+* Main background: warm white / very light cream
+* Primary accent: soft pastel blush pink
+* Clean, minimal, elegant, calming
+* Rounded cards, rounded table corners, subtle borders
+* Lots of whitespace
+* Avoid harsh colors, overly saturated pink, gradients, clutter, or overly complicated dashboards
+* The interface should feel like a refined student study dashboard, not a corporate analytics tool
+* Keep typography clean and highly readable
+
+## Main layout
+
+The Progress Tracker page should have:
+
+**TOP:** Chart area
+**BOTTOM:** Grade input table
+
+The chart area should take up most of the visual focus. The table should sit below it for data entry and reference.
+
+---
+
+# 1. Main Grade Table
+
+Create **one central grade database/table**. Every chart in the tracker must use this same table as its data source.
+
+Make the table visually rounded and polished.
+
+### Columns
+
+The table should include:
+
+* **Subject**
+* **Term 1**
+* **Term 2**
+* **Term 3**
+* **Term 4**
+
+The term headers must appear exactly as:
+
+**Term 1 | Term 2 | Term 3 | Term 4**
+
+### Subject input
+
+The **Subject** column must use a dropdown/select field.
+
+The dropdown should allow me to tag each row with a subject label.
+
+Make the subject system easy to edit later so I can add/remove subjects without changing the chart logic.
+
+Example subjects:
+
+* English
+* Mathematics
+* Science
+* Geography
+* Chinese
+* Malay
+* Other
+
+Do not hard-code these as the only possible subjects. The system should allow additional subjects.
+
+### Grade input
+
+Each term cell should accept a numerical grade.
+
+Example:
+
+| Subject     | Term 1 | Term 2 | Term 3 | Term 4 |
+| ----------- | -----: | -----: | -----: | -----: |
+| Science     |     83 |     88 |     91 |     94 |
+| Mathematics |     78 |     84 |     87 |     90 |
+| English     |     91 |     93 |     94 |     96 |
+
+Allow blank cells for terms that have not happened yet.
+
+Do not treat blank cells as zero.
+
+---
+
+# 2. Data Logic
+
+The entire tracker must be powered by the **single central grade table**.
+
+Do NOT create separate databases/tables for individual charts.
+
+When I edit a grade in the table, every relevant chart should automatically update.
+
+When I add a new subject, the subject should automatically become available to the chart system where appropriate.
+
+When I change a grade, the charts should immediately reflect the change.
+
+---
+
+# 3. Bar Chart View — Term Performance
+
+Create a chart view called:
+
+**Term Performance**
+
+This view should contain a **bar chart comparing grades within one selected term**.
+
+Add a term filter/dropdown:
+
+**Term 1 | Term 2 | Term 3 | Term 4**
+
+When I select Term 1:
+
+* X-axis = Subjects
+* Y-axis = Grade
+* Bars = each subject's Term 1 grade
+
+When I select Term 2, the exact same chart should automatically switch to Term 2 grades.
+
+Do the same for Terms 3 and 4.
+
+### Important
+
+The chart must **not require me to create a new chart every term**.
+
+It should be one reusable bar-chart view with a term selector.
+
+If a subject has no grade for the selected term, omit it from the chart rather than displaying 0.
+
+Keep the chart visually consistent with the soft pink + white Bloom aesthetic.
+
+---
+
+# 4. Subject Performance Line Charts
+
+Create a separate chart view for **each subject**.
+
+Each subject view should contain a line chart showing that subject's performance across the four terms.
+
+Example for Science:
+
+* Term 1 = 83
+* Term 2 = 88
+* Term 3 = 91
+* Term 4 = 94
+
+The chart should show a line increasing from 83 → 88 → 91 → 94.
+
+### Line chart structure
+
+* X-axis = Term 1, Term 2, Term 3, Term 4
+* Y-axis = Grade
+* One line representing that subject
+* Display the grade values clearly
+* Blank future terms should remain blank rather than being treated as zero
+
+Create individual views such as:
+
+* **Science**
+* **Mathematics**
+* **English**
+* **Geography**
+* **Chinese**
+* **Malay**
+
+However, make the system flexible so additional subjects can be supported.
+
+---
+
+# 5. Chart Tabs / Views
+
+The charts must be separated into tabs/views.
+
+Create:
+
+### View 1
+
+**Term Performance**
+
+Contains the reusable bar chart + term selector.
+
+### View 2+
+
+One separate view for each subject's line chart.
+
+For example:
+
+**Term Performance | Science | Mathematics | English | Geography | Chinese | Malay**
+
+Switching between these tabs should change the chart displayed at the top while keeping the underlying grade database the same.
+
+The table remains the single source of truth.
+
+---
+
+# 6. Dashboard Positioning
+
+The page should be visually structured like this:
+
+```text
+┌─────────────────────────────────────────────┐
+│              PROGRESS TRACKER               │
+│                                             │
+│  [Term Performance] [Science] [Math] ...   │
+│                                             │
+│                                             │
+│             📊 ACTIVE CHART                │
+│                                             │
+│                                             │
+├─────────────────────────────────────────────┤
+│                                             │
+│              GRADE DATABASE                 │
+│                                             │
+│ Subject       Term 1  Term 2  Term 3 Term 4 │
+│ Science         83      88      91     94   │
+│ Math            78      84      87     90   │
+│ English         91      93      94     96   │
+│                                             │
+└─────────────────────────────────────────────┘
+```
+
+The **chart must always appear above the table**.
+
+---
+
+# 7. Grade Visualization
+
+Keep the visualizations clean and student-friendly.
+
+Use soft pink as the primary chart accent and warm white as the background.
+
+Do not use a rainbow of colors.
+
+For the line charts, use the same consistent visual language across every subject view.
+
+Make grade values easy to read.
+
+The Y-axis should use a sensible grade range rather than making tiny changes look artificially enormous.
+
+---
+
+# 8. Empty States
+
+If there are no grades yet, do not show broken charts.
+
+Instead show a friendly empty state such as:
+
+**“Add your grades below to start tracking your progress.”**
+
+If only some terms have grades, show only the available data.
+
+---
+
+# 9. Important UX Requirements
+
+The tracker should feel extremely simple:
+
+**Input grade → choose subject → chart updates automatically.**
+
+Do not make me manually connect datasets.
+
+Do not duplicate grade data.
+
+Do not require separate grade entry for charts.
+
+Do not create unnecessary settings or complicated analytics.
+
+The central grade table is the **single source of truth**.
+
+---
+
+# 10. Final Quality Standard
+
+The finished Progress Tracker should feel like a **beautiful, minimal Bloom feature**, not a generic spreadsheet.
+
+Prioritize:
+
+1. Clean visual hierarchy
+2. Extremely easy grade entry
+3. Automatic chart updates
+4. One central data source
+5. Clear term comparison
+6. Clear subject progression
+7. Soft pink + warm white aesthetic
+8. Rounded UI
+9. Minimal clutter
+10. Excellent readability
+
+Before considering the feature complete, test it with sample data:
+
+Science:
+
+* Term 1: 83
+* Term 2: 88
+* Term 3: 91
+* Term 4: 94
+
+Verify that:
+
+* The Term Performance bar chart correctly switches between terms.
+* The Science line chart correctly shows 83 → 88 → 91 → 94.
+* Blank terms do not appear as zero.
+* Editing a grade in the central table automatically updates the relevant charts.
+* All chart views use the same underlying table.

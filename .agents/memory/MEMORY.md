@@ -1,3 +1,4 @@
 - [Drizzle push table rename prompt](drizzle-push-rename-prompt.md) — dropping+adding tables in one schema change can hang `drizzle-kit push` on a non-interactive TTY prompt.
 - [Subjects feature decisions](subjects-feature.md) — key architecture choices for subjects, object storage, mastery, and planner-item name matching.
 - [Focus Tracker architecture](focus-tracker.md) — dedicated focus_sessions lifecycle table also mirrors completed minutes into legacy study_sessions.
+- [Grade Progress architecture](grade-progress.md) — one nullable-term row per subject powers the editable table and every chart.

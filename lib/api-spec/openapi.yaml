@@ -24,6 +24,8 @@ tags:
     description: Object storage upload and serving endpoints.
   - name: focus-sessions
     description: Bloom Focus Tracker sessions, history, and statistics
+  - name: progress
+    description: Grade Progress Tracker data
 paths:
   /healthz:
     get:
@@ -605,6 +607,76 @@ paths:
         "204":
           description: Deleted
 
+  /progress/grades:
+    get:
+      operationId: listProgressGrades
+      tags: [progress]
+      summary: List all grade rows
+      responses:
+        "200":
+          description: Grade database rows
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProgressGrade"
+    post:
+      operationId: createProgressGrade
+      tags: [progress]
+      summary: Add a subject grade row
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProgressGradeInput"
+      responses:
+        "201":
+          description: Created grade row
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProgressGrade"
+
+  /progress/grades/{id}:
+    patch:
+      operationId: updateProgressGrade
+      tags: [progress]
+      summary: Update a grade row
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProgressGradeUpdate"
+      responses:
+        "200":
+          description: Updated grade row
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProgressGrade"
+    delete:
+      operationId: deleteProgressGrade
+      tags: [progress]
+      summary: Delete a grade row
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
 components:
   schemas:
     HealthStatus:
@@ -1133,3 +1205,94 @@ components:
                 type: string
               minutes:
                 type: integer
+
+    ProgressGrade:
+      type: object
+      required: [id, subject, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        subject:
+          type: string
+          minLength: 1
+        term1:
+          type: integer
+          minimum: 0
+          maximum: 100
+          nullable: true
+        term2:
+          type: integer
+          minimum: 0
+          maximum: 100
+          nullable: true
+        term3:
+          type: integer
+          minimum: 0
+          maximum: 100
+          nullable: true
+        term4:
+          type: integer
+          minimum: 0
+          maximum: 100
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ProgressGradeInput:
+      type: object
+      required: [subject]
+      properties:
+        subject:
+          type: string
+          minLength: 1
+        term1:
+          type: integer
+          minimum: 0
+          maximum: 100
+          nullable: true
+        term2:
+          type: integer
+          minimum: 0
+          maximum: 100
+          nullable: true
+        term3:
+          type: integer
+          minimum: 0
+          maximum: 100
+          nullable: true
+        term4:
+          type: integer
+          minimum: 0
+          maximum: 100
+          nullable: true
+
+    ProgressGradeUpdate:
+      type: object
+      properties:
+        subject:
+          type: string
+          minLength: 1
+        term1:
+          type: integer
+          minimum: 0
+          maximum: 100
+          nullable: true
+        term2:
+          type: integer
+          minimum: 0
+          maximum: 100
+          nullable: true
+        term3:
+          type: integer
+          minimum: 0
+          maximum: 100
+          nullable: true
+        term4:
+          type: integer
+          minimum: 0
+          maximum: 100
+          nullable: true

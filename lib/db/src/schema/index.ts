@@ -5,3 +5,4 @@ export * from "./subjects";
 export * from "./subjectNotes";
 export * from "./subjectFiles";
 export * from "./focusSessions";
+export * from "./progressGrades";

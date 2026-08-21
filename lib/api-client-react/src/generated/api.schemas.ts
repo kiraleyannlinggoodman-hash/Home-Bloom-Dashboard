@@ -322,6 +322,84 @@ export interface FocusStats {
   byWeek: FocusStatsByWeekItem[];
 }
 
+export interface ProgressGrade {
+  id: number;
+  /** @minLength 1 */
+  subject: string;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  term1?: number | null;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  term2?: number | null;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  term3?: number | null;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  term4?: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProgressGradeInput {
+  /** @minLength 1 */
+  subject: string;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  term1?: number | null;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  term2?: number | null;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  term3?: number | null;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  term4?: number | null;
+}
+
+export interface ProgressGradeUpdate {
+  /** @minLength 1 */
+  subject?: string;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  term1?: number | null;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  term2?: number | null;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  term3?: number | null;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  term4?: number | null;
+}
+
 export type ListPlannerItemsParams = {
 /**
  * Inclusive start date (YYYY-MM-DD)

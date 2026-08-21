@@ -32,6 +32,9 @@ import type {
   PlannerItem,
   PlannerItemInput,
   PlannerItemUpdate,
+  ProgressGrade,
+  ProgressGradeInput,
+  ProgressGradeUpdate,
   Quote,
   StudySession,
   StudySessionInput,
@@ -2161,5 +2164,296 @@ export const useDeleteFocusSession = <TError = ErrorType<unknown>,
         TContext
       > => {
       return useMutation(getDeleteFocusSessionMutationOptions(options));
+    }
+
+export const getListProgressGradesUrl = () => {
+
+
+
+
+  return `/api/progress/grades`
+}
+
+/**
+ * @summary List all grade rows
+ */
+export const listProgressGrades = async ( options?: RequestInit): Promise<ProgressGrade[]> => {
+
+  return customFetch<ProgressGrade[]>(getListProgressGradesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListProgressGradesQueryKey = () => {
+    return [
+    `/api/progress/grades`
+    ] as const;
+    }
+
+
+export const getListProgressGradesQueryOptions = <TData = Awaited<ReturnType<typeof listProgressGrades>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listProgressGrades>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListProgressGradesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listProgressGrades>>> = ({ signal }) => listProgressGrades({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listProgressGrades>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListProgressGradesQueryResult = NonNullable<Awaited<ReturnType<typeof listProgressGrades>>>
+export type ListProgressGradesQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List all grade rows
+ */
+
+export function useListProgressGrades<TData = Awaited<ReturnType<typeof listProgressGrades>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listProgressGrades>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListProgressGradesQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCreateProgressGradeUrl = () => {
+
+
+
+
+  return `/api/progress/grades`
+}
+
+/**
+ * @summary Add a subject grade row
+ */
+export const createProgressGrade = async (progressGradeInput: ProgressGradeInput, options?: RequestInit): Promise<ProgressGrade> => {
+
+  return customFetch<ProgressGrade>(getCreateProgressGradeUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(progressGradeInput)
+  }
+);}
+
+
+
+
+
+export const getCreateProgressGradeMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createProgressGrade>>, TError,{data: BodyType<ProgressGradeInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createProgressGrade>>, TError,{data: BodyType<ProgressGradeInput>}, TContext> => {
+
+const mutationKey = ['createProgressGrade'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createProgressGrade>>, {data: BodyType<ProgressGradeInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createProgressGrade(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateProgressGradeMutationResult = NonNullable<Awaited<ReturnType<typeof createProgressGrade>>>
+    export type CreateProgressGradeMutationBody = BodyType<ProgressGradeInput>
+    export type CreateProgressGradeMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Add a subject grade row
+ */
+export const useCreateProgressGrade = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createProgressGrade>>, TError,{data: BodyType<ProgressGradeInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createProgressGrade>>,
+        TError,
+        {data: BodyType<ProgressGradeInput>},
+        TContext
+      > => {
+      return useMutation(getCreateProgressGradeMutationOptions(options));
+    }
+
+export const getUpdateProgressGradeUrl = (id: number,) => {
+
+
+
+
+  return `/api/progress/grades/${id}`
+}
+
+/**
+ * @summary Update a grade row
+ */
+export const updateProgressGrade = async (id: number,
+    progressGradeUpdate: ProgressGradeUpdate, options?: RequestInit): Promise<ProgressGrade> => {
+
+  return customFetch<ProgressGrade>(getUpdateProgressGradeUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(progressGradeUpdate)
+  }
+);}
+
+
+
+
+
+export const getUpdateProgressGradeMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateProgressGrade>>, TError,{id: number;data: BodyType<ProgressGradeUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateProgressGrade>>, TError,{id: number;data: BodyType<ProgressGradeUpdate>}, TContext> => {
+
+const mutationKey = ['updateProgressGrade'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateProgressGrade>>, {id: number;data: BodyType<ProgressGradeUpdate>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateProgressGrade(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateProgressGradeMutationResult = NonNullable<Awaited<ReturnType<typeof updateProgressGrade>>>
+    export type UpdateProgressGradeMutationBody = BodyType<ProgressGradeUpdate>
+    export type UpdateProgressGradeMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Update a grade row
+ */
+export const useUpdateProgressGrade = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateProgressGrade>>, TError,{id: number;data: BodyType<ProgressGradeUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateProgressGrade>>,
+        TError,
+        {id: number;data: BodyType<ProgressGradeUpdate>},
+        TContext
+      > => {
+      return useMutation(getUpdateProgressGradeMutationOptions(options));
+    }
+
+export const getDeleteProgressGradeUrl = (id: number,) => {
+
+
+
+
+  return `/api/progress/grades/${id}`
+}
+
+/**
+ * @summary Delete a grade row
+ */
+export const deleteProgressGrade = async (id: number, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeleteProgressGradeUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteProgressGradeMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteProgressGrade>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteProgressGrade>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['deleteProgressGrade'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteProgressGrade>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteProgressGrade(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteProgressGradeMutationResult = NonNullable<Awaited<ReturnType<typeof deleteProgressGrade>>>
+
+    export type DeleteProgressGradeMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Delete a grade row
+ */
+export const useDeleteProgressGrade = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteProgressGrade>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteProgressGrade>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+      return useMutation(getDeleteProgressGradeMutationOptions(options));
     }
 
