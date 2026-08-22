@@ -314,7 +314,14 @@ export default function Progress() {
     });
   };
   const addGrade = () => {
-    const fallbackSubject = subjects[0]?.name ?? "Other";
+    const existingSubjects = new Set(grades.map((grade) => grade.subject));
+    const unusedSubject = subjects.find((subject) => !existingSubjects.has(subject.name))?.name;
+    let fallbackSubject = unusedSubject ?? "Other";
+    let suffix = 2;
+    while (existingSubjects.has(fallbackSubject)) {
+      fallbackSubject = `Other ${suffix}`;
+      suffix += 1;
+    }
     const data: ProgressGradeInput = { subject: fallbackSubject, term1: null, term2: null, term3: null, term4: null };
     createGrade.mutate({ data }, { onSuccess: invalidate });
   };
