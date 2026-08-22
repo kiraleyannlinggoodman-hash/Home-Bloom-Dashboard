@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @plugin "@tailwindcss/typography";
@@ -52,28 +52,28 @@
 }
 
 :root {
-  /* Calm White & Blush Pink Aesthetic */
-  --background: 32 44% 97%;
-  --foreground: 337 20% 24%;
+  /* Soft blush-white Bloom background */
+  --background: 350 100% 98%;
+  --foreground: 337 28% 18%;
   
-  --card: 36 100% 99%;
-  --card-foreground: 337 20% 24%;
-  --card-border: 34 35% 91%;
+  --card: 0 0% 100%;
+  --card-foreground: 337 28% 18%;
+  --card-border: 350 48% 94%;
   
-  --popover: 36 100% 99%;
-  --popover-foreground: 337 20% 24%;
-  --popover-border: 34 35% 91%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 337 28% 18%;
+  --popover-border: 350 48% 94%;
   
   /* Accent Pink #E9A8C2 */
   --primary: 337 58% 72%;
-  --primary-foreground: 36 100% 99%;
+  --primary-foreground: 0 0% 100%;
   
   /* Soft Blush Pink #F7DCE6 */
   --secondary: 337 65% 91%;
   --secondary-foreground: 337 32% 42%;
   
-  --muted: 33 35% 94%;
-  --muted-foreground: 337 12% 52%;
+  --muted: 350 58% 96%;
+  --muted-foreground: 337 12% 50%;
   
   --accent: 91 28% 84%;
   --accent-foreground: 122 22% 31%;
@@ -81,18 +81,18 @@
   --destructive: 3 58% 60%;
   --destructive-foreground: 36 100% 99%;
   
-  --border: 33 28% 88%;
-  --input: 33 28% 86%;
+  --border: 350 35% 91%;
+  --input: 350 35% 89%;
   --ring: 337 58% 72%;
   
-  --sidebar: 42 52% 95%;
+  --sidebar: 350 72% 96%;
   --sidebar-foreground: 337 16% 34%;
-  --sidebar-border: 33 28% 88%;
+  --sidebar-border: 350 35% 91%;
 
   --bloom: 337 58% 72%;
 
-  --app-font-sans: 'DM Sans', sans-serif;
-  --app-font-serif: 'Fraunces', serif;
+  --app-font-sans: 'Poppins', sans-serif;
+  --app-font-serif: 'Poppins', sans-serif;
   
   --radius: 1.5rem;
 }

@@ -1,0 +1,116 @@
+# IMPORTANT: RESTORE BLOOM'S ORIGINAL DESIGN
+
+The Progress Tracker functionality is good and should be **KEPT**.
+
+However, the implementation accidentally changed Bloom's existing visual identity across the app.
+
+**Do NOT redesign Bloom. Do NOT create a new aesthetic.**
+
+The existing Bloom aesthetic is the source of truth and must be restored.
+
+## 1. Restore the original Bloom design system
+
+Revert any global visual changes made while implementing the Progress Tracker, especially:
+
+* ❌ Font changes
+* ❌ Typography changes
+* ❌ Global color changes
+* ❌ Background changes
+* ❌ Button styling changes
+* ❌ Card styling changes
+* ❌ Border-radius changes
+* ❌ Spacing changes
+* ❌ Navigation styling changes
+* ❌ Global component redesigns
+
+The rest of Bloom should look **exactly as it did before the Progress Tracker was added.**
+
+Do not modify existing pages/components unless absolutely necessary for compatibility.
+
+## 2. FONT — VERY IMPORTANT
+
+**Restore and preserve Bloom's original font.**
+
+Do NOT substitute it with a new font.
+
+Do NOT import a new font.
+
+Do NOT change the global font family.
+
+The Progress Tracker must inherit Bloom's existing typography system.
+
+If the original font is defined in the existing CSS/design system, use that exact font configuration.
+
+## 3. COLORS — VERY IMPORTANT
+
+Restore Bloom's original color palette.
+
+The Progress Tracker should use the **same colors already used throughout Bloom**.
+
+Do not introduce a completely new pink palette.
+
+Do not make the entire application pink just because the Progress Tracker uses pink accents.
+
+The Progress Tracker should feel like it was always part of Bloom.
+
+## 4. PRESERVE THE EXISTING BLOOM AESTHETIC
+
+The original Bloom aesthetic should remain the visual source of truth:
+
+* Soft
+* Minimal
+* Clean
+* Calm
+* Student-focused
+* Rounded
+* Elegant
+* Warm
+* Soft pink + warm white accents
+* Cute but not childish
+
+thaUse Bloom's existing components, spacing, typography, buttons, cards, and visual patterns wherever possible.
+
+**Do not invent a new design system.**
+
+## 5. PROGRESS TRACKER
+
+Keep all the functionality that was already implemented:
+
+* Central grade table
+* Subject dropdown
+* Term 1 / Term 2 / Term 3 / Term 4
+* Term Performance bar chart
+* Term selector
+* Individual subject line-chart views
+* Charts automatically feeding from the central table
+* Table below charts
+* Charts above table
+* Blank terms remaining blank rather than becoming zero
+
+Only **restyle these components so they match the original Bloom design system.**
+
+## 6. EMOJIS
+
+Keep the Bloom personality using emojis such as:
+
+🌿 🌸 🎀 🩷 📚 🧠 📝 💜
+
+Use them sparingly as decorative accents in headings, labels, empty states, and small pieces of microcopy.
+
+Do NOT use emojis excessively.
+
+## 7. CRITICAL RULE
+
+**DO NOT CHANGE ANYTHING OUTSIDE THE PROGRESS TRACKER THAT IS NOT REQUIRED FOR THE FEATURE TO FUNCTION.**
+
+The goal is:
+
+**Existing Bloom + Progress Tracker**
+
+NOT:
+
+**Newly redesigned Bloom + Progress Tracker**
+
+The Progress Tracker should look like a native part of the existing Bloom app.
+
+Before finishing, compare the current app against the pre-Progress-Tracker version and make sure the original font, colors, spacing, navigation, cards, buttons, and overall aesthetic have been restored.
