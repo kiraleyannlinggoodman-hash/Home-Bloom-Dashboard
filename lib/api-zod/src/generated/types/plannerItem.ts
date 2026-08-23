@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { PlannerItemPriority } from './plannerItemPriority';
+import type { PlannerItemReminderMinutes } from './plannerItemReminderMinutes';
 import type { PlannerItemType } from './plannerItemType';
 
 export interface PlannerItem {
@@ -26,6 +27,11 @@ export interface PlannerItem {
      * @nullable
      */
   endTime?: string | null;
+  /**
+     * Minutes before the scheduled start/due time to notify
+     * @nullable
+     */
+  reminderMinutes?: PlannerItemReminderMinutes;
   priority: PlannerItemPriority;
   completed: boolean;
   /** @nullable */

@@ -1,0 +1,24 @@
+kind = "mobile"
+previewPath = "/bloom-ios/"
+title = "Bloom iOS"
+description = "A native iPhone and iPad companion for Bloom with the existing study planner, focus timer, subjects, progress tracking, and native iOS notifications."
+version = "1.0.0"
+id = "artifacts/bloom-ios"
+router = "expo-domain"
+
+[[services]]
+name = "expo"
+ensurePreviewReachable = "/status"
+paths = [ "/bloom-ios/" ]
+localPort = 19684
+
+[services.development]
+run = "pnpm --filter @workspace/bloom-ios run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/bloom-ios", "run", "build" ]
+run = [ "pnpm", "--filter", "@workspace/bloom-ios", "run", "serve" ]
+
+[services.env]
+PORT = "19684"
+BASE_PATH = "/bloom-ios/"

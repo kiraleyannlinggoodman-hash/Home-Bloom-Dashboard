@@ -39,6 +39,22 @@ export const PlannerItemPriority = {
   high: 'high',
 } as const;
 
+/**
+ * Minutes before the scheduled start/due time to notify
+ * @nullable
+ */
+export type PlannerItemReminderMinutes = typeof PlannerItemReminderMinutes[keyof typeof PlannerItemReminderMinutes] | null;
+
+
+export const PlannerItemReminderMinutes = {
+  NUMBER_5: 5,
+  NUMBER_15: 15,
+  NUMBER_30: 30,
+  NUMBER_60: 60,
+  NUMBER_120: 120,
+  NUMBER_1440: 1440,
+} as const;
+
 export interface PlannerItem {
   id: number;
   title: string;
@@ -57,12 +73,29 @@ export interface PlannerItem {
      * @nullable
      */
   endTime?: string | null;
+  /**
+     * Minutes before the scheduled start/due time to notify
+     * @nullable
+     */
+  reminderMinutes?: PlannerItemReminderMinutes;
   priority: PlannerItemPriority;
   completed: boolean;
   /** @nullable */
   notes?: string | null;
   createdAt: string;
 }
+
+export type PlannerItemInputReminderMinutes = typeof PlannerItemInputReminderMinutes[keyof typeof PlannerItemInputReminderMinutes];
+
+
+export const PlannerItemInputReminderMinutes = {
+  NUMBER_5: 5,
+  NUMBER_15: 15,
+  NUMBER_30: 30,
+  NUMBER_60: 60,
+  NUMBER_120: 120,
+  NUMBER_1440: 1440,
+} as const;
 
 export interface PlannerItemInput {
   /** @minLength 1 */
@@ -72,9 +105,22 @@ export interface PlannerItemInput {
   date: string;
   startTime?: string;
   endTime?: string;
+  reminderMinutes?: PlannerItemInputReminderMinutes;
   priority?: PlannerItemPriority;
   notes?: string;
 }
+
+export type PlannerItemUpdateReminderMinutes = typeof PlannerItemUpdateReminderMinutes[keyof typeof PlannerItemUpdateReminderMinutes];
+
+
+export const PlannerItemUpdateReminderMinutes = {
+  NUMBER_5: 5,
+  NUMBER_15: 15,
+  NUMBER_30: 30,
+  NUMBER_60: 60,
+  NUMBER_120: 120,
+  NUMBER_1440: 1440,
+} as const;
 
 export interface PlannerItemUpdate {
   /** @minLength 1 */
@@ -83,6 +129,7 @@ export interface PlannerItemUpdate {
   date?: string;
   startTime?: string;
   endTime?: string;
+  reminderMinutes?: PlannerItemUpdateReminderMinutes;
   priority?: PlannerItemPriority;
   completed?: boolean;
   notes?: string;

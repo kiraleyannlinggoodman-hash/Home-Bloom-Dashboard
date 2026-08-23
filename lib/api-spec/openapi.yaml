@@ -749,6 +749,10 @@ components:
         endTime:
           type: ["string", "null"]
           description: "24h time HH:mm"
+        reminderMinutes:
+          type: ["integer", "null"]
+          enum: [5, 15, 30, 60, 120, 1440]
+          description: "Minutes before the scheduled start/due time to notify"
         priority:
           $ref: "#/components/schemas/PlannerItemPriority"
         completed:
@@ -779,6 +783,9 @@ components:
           type: string
         endTime:
           type: string
+        reminderMinutes:
+          type: integer
+          enum: [5, 15, 30, 60, 120, 1440]
         priority:
           $ref: "#/components/schemas/PlannerItemPriority"
         notes:
@@ -798,6 +805,9 @@ components:
           type: string
         endTime:
           type: string
+        reminderMinutes:
+          type: integer
+          enum: [5, 15, 30, 60, 120, 1440]
         priority:
           $ref: "#/components/schemas/PlannerItemPriority"
         completed:

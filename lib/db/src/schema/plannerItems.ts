@@ -1,4 +1,4 @@
-import { boolean, date, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, date, integer, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
@@ -16,6 +16,7 @@ export const plannerItemsTable = pgTable("planner_items", {
   date: date("date", { mode: "string" }).notNull(),
   startTime: text("start_time"),
   endTime: text("end_time"),
+  reminderMinutes: integer("reminder_minutes"),
   priority: text("priority", { enum: ["low", "medium", "high"] })
     .notNull()
     .default("medium"),

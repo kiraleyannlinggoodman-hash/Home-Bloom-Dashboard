@@ -5,6 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { PlannerItemInputReminderMinutes } from './plannerItemInputReminderMinutes';
 import type { PlannerItemPriority } from './plannerItemPriority';
 import type { PlannerItemType } from './plannerItemType';
 
@@ -16,6 +17,7 @@ export interface PlannerItemInput {
   date: string;
   startTime?: string;
   endTime?: string;
+  reminderMinutes?: PlannerItemInputReminderMinutes;
   priority?: PlannerItemPriority;
   notes?: string;
 }
