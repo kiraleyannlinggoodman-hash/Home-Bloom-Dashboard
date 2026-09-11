@@ -91,6 +91,7 @@ function HomeworkModal({ open, onOpenChange }: { open: boolean, onOpenChange: (o
   const [title, setTitle] = useState("")
   const [subject, setSubject] = useState("")
   const [dueDate, setDueDate] = useState("")
+  const [reminderMinutes, setReminderMinutes] = useState("15")
 
   const today = format(new Date(), 'yyyy-MM-dd')
 
@@ -99,7 +100,7 @@ function HomeworkModal({ open, onOpenChange }: { open: boolean, onOpenChange: (o
     if (!title) return
 
     createItem.mutate(
-      { data: { title, subject: subject || undefined, type: "homework", date: dueDate || today } },
+      { data: { title, subject: subject || undefined, type: "homework", date: dueDate || today, reminderMinutes: Number(reminderMinutes) as 5 | 15 | 30 | 60 | 120 | 1440 } },
       {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: getListPlannerItemsQueryKey() })
@@ -108,6 +109,7 @@ function HomeworkModal({ open, onOpenChange }: { open: boolean, onOpenChange: (o
           setTitle("")
           setSubject("")
           setDueDate("")
+          setReminderMinutes("15")
         }
       }
     )
@@ -132,6 +134,20 @@ function HomeworkModal({ open, onOpenChange }: { open: boolean, onOpenChange: (o
           <div className="space-y-2">
             <Label htmlFor="hw-due">Due Date</Label>
             <Input id="hw-due" type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
+          </div>
+          <div className="space-y-2">
+            <Label>Early Reminder</Label>
+            <Select value={reminderMinutes} onValueChange={setReminderMinutes}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="5">5 minutes before</SelectItem>
+                <SelectItem value="15">15 minutes before</SelectItem>
+                <SelectItem value="30">30 minutes before</SelectItem>
+                <SelectItem value="60">1 hour before</SelectItem>
+                <SelectItem value="120">2 hours before</SelectItem>
+                <SelectItem value="1440">1 day before</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div className="pt-4 flex justify-end">
             <Button type="submit" disabled={!title || createItem.isPending}>
@@ -213,6 +229,7 @@ function EventModal({ open, onOpenChange }: { open: boolean, onOpenChange: (open
   const createItem = useCreatePlannerItem()
   const [title, setTitle] = useState("")
   const [time, setTime] = useState("12:00")
+  const [reminderMinutes, setReminderMinutes] = useState("15")
   
   const today = format(new Date(), 'yyyy-MM-dd')
 
@@ -221,7 +238,7 @@ function EventModal({ open, onOpenChange }: { open: boolean, onOpenChange: (open
     if (!title || !time) return
 
     createItem.mutate(
-      { data: { title, startTime: time, type: "event", date: today } },
+      { data: { title, startTime: time, type: "event", date: today, reminderMinutes: Number(reminderMinutes) as 5 | 15 | 30 | 60 | 120 | 1440 } },
       {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: getListPlannerItemsQueryKey() })
@@ -229,6 +246,7 @@ function EventModal({ open, onOpenChange }: { open: boolean, onOpenChange: (open
           onOpenChange(false)
           setTitle("")
           setTime("12:00")
+          setReminderMinutes("15")
         }
       }
     )
@@ -249,6 +267,20 @@ function EventModal({ open, onOpenChange }: { open: boolean, onOpenChange: (open
           <div className="space-y-2">
             <Label htmlFor="ev-time">Time</Label>
             <Input id="ev-time" type="time" value={time} onChange={(e) => setTime(e.target.value)} />
+          </div>
+          <div className="space-y-2">
+            <Label>Early Reminder</Label>
+            <Select value={reminderMinutes} onValueChange={setReminderMinutes}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="5">5 minutes before</SelectItem>
+                <SelectItem value="15">15 minutes before</SelectItem>
+                <SelectItem value="30">30 minutes before</SelectItem>
+                <SelectItem value="60">1 hour before</SelectItem>
+                <SelectItem value="120">2 hours before</SelectItem>
+                <SelectItem value="1440">1 day before</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div className="pt-4 flex justify-end">
             <Button type="submit" disabled={!title || !time || createItem.isPending}>

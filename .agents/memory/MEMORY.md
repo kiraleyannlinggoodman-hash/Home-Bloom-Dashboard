@@ -3,3 +3,4 @@
 - [Focus Tracker architecture](focus-tracker.md) — dedicated focus_sessions lifecycle table also mirrors completed minutes into legacy study_sessions.
 - [Grade Progress architecture](grade-progress.md) — one nullable-term row per subject powers the editable table and every chart.
 - [Bloom visual direction](bloom-visual-direction.md) — project-wide styling favors soft blush-white surfaces, white cards, and Poppins typography.
+- [Expo workspace dependency installation](expo-workspace-dependency-install.md) — declared native packages may need a filtered pnpm install before Expo can resolve config plugins.

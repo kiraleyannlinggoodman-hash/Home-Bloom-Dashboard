@@ -44,6 +44,15 @@ const TYPE_CONFIG: Record<PlannerItemType | 'all', { bg: string, text: string, b
   note: { bg: "bg-slate-100", text: "text-slate-800", border: "border-slate-200", dot: "bg-slate-400", emoji: "📝", label: "Note" },
 };
 
+const REMINDER_OPTIONS = [
+  { value: "5", label: "5 minutes before" },
+  { value: "15", label: "15 minutes before" },
+  { value: "30", label: "30 minutes before" },
+  { value: "60", label: "1 hour before" },
+  { value: "120", label: "2 hours before" },
+  { value: "1440", label: "1 day before" },
+];
+
 export default function Planner() {
   const [viewMode, setViewMode] = useState<'today' | 'week' | 'month'>('today');
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -548,6 +557,7 @@ function CreateItemModal({ open, onOpenChange, defaultDate }: { open: boolean, o
   const [date, setDate] = useState(format(defaultDate, 'yyyy-MM-dd'));
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [reminderMinutes, setReminderMinutes] = useState("15");
   const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -563,6 +573,7 @@ function CreateItemModal({ open, onOpenChange, defaultDate }: { open: boolean, o
           subject: subject || undefined,
           startTime: startTime || undefined,
           endTime: endTime || undefined,
+           reminderMinutes: type === "note" ? undefined : Number(reminderMinutes) as 5 | 15 | 30 | 60 | 120 | 1440,
           priority 
         } 
       },
@@ -576,6 +587,7 @@ function CreateItemModal({ open, onOpenChange, defaultDate }: { open: boolean, o
           setSubject("");
           setStartTime("");
           setEndTime("");
+           setReminderMinutes("15");
           setPriority("medium");
           setType("homework");
         }
@@ -624,6 +636,23 @@ function CreateItemModal({ open, onOpenChange, defaultDate }: { open: boolean, o
               </Select>
             </div>
           </div>
+
+          {type !== "note" && (
+            <div className="space-y-2">
+              <Label>Early Reminder</Label>
+              <Select value={reminderMinutes} onValueChange={setReminderMinutes}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {REMINDER_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">Notifications use the start time when one is set.</p>
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label htmlFor="title">Title</Label>

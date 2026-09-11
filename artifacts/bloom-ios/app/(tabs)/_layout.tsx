@@ -19,6 +19,11 @@ function NativeTabLayout() {
         <Icon sf={{ default: 'house', selected: 'house.fill' }} />
         <Label>Home</Label>
       </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="planner"><Icon sf="calendar" /><Label>Planner</Label></NativeTabs.Trigger>
+      <NativeTabs.Trigger name="subjects"><Icon sf="book" /><Label>Subjects</Label></NativeTabs.Trigger>
+      <NativeTabs.Trigger name="focus"><Icon sf="timer" /><Label>Focus</Label></NativeTabs.Trigger>
+      <NativeTabs.Trigger name="progress"><Icon sf="chart.bar" /><Label>Progress</Label></NativeTabs.Trigger>
+      <NativeTabs.Trigger name="settings"><Icon sf="gearshape" /><Label>Settings</Label></NativeTabs.Trigger>
     </NativeTabs>
   );
 }
@@ -73,6 +78,9 @@ function ClassicTabLayout() {
             ),
         }}
       />
+      {(['planner', 'subjects', 'focus', 'progress', 'settings'] as const).map((name) => (
+        <Tabs.Screen key={name} name={name} options={{ title: name[0].toUpperCase() + name.slice(1), tabBarIcon: ({ color }) => <Feather name={({ planner: 'calendar', subjects: 'book-open', focus: 'clock', progress: 'bar-chart-2', settings: 'settings' } as const)[name]} size={22} color={color} /> }} />
+      ))}
     </Tabs>
   );
 }
