@@ -15,7 +15,14 @@ export function NotificationPreferencesProvider({ children }: { children: React.
   useEffect(() => { AsyncStorage.getItem(key).then((value) => { if (value) try { setPreferences({ ...defaults, ...JSON.parse(value), categories: { ...defaults.categories, ...JSON.parse(value).categories } }); } catch { /* retain defaults */ } }); }, []);
   const save = async (next: Preferences) => { setPreferences(next); await AsyncStorage.setItem(key, JSON.stringify(next)); };
   const setEnabled = async (value: boolean) => {
-    if (value && Platform.OS !== 'web' && !(await Notifications.requestPermissionsAsync()).granted) return false;
+    if (value && Platform.OS !== 'web') {
+      try {
+        const permission = await Notifications.requestPermissionsAsync();
+        if (!permission.granted) return false;
+      } catch {
+        return false;
+      }
+    }
     await save({ ...preferences, enabled: value }); return true;
   };
   const value = useMemo(() => ({ preferences, setEnabled, setCategory: (category: PlannerCategory, enabled: boolean) => save({ ...preferences, categories: { ...preferences.categories, [category]: enabled } }), setDefaultReminder: (defaultReminder: number) => save({ ...preferences, defaultReminder }) }), [preferences]);
