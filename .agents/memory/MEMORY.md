@@ -4,3 +4,4 @@
 - [Grade Progress architecture](grade-progress.md) — one nullable-term row per subject powers the editable table and every chart.
 - [Bloom visual direction](bloom-visual-direction.md) — project-wide styling favors soft blush-white surfaces, white cards, and Poppins typography.
 - [Expo workspace dependency installation](expo-workspace-dependency-install.md) — declared native packages may need a filtered pnpm install before Expo can resolve config plugins.
+- [Expo SDK 57 upgrade](expo-sdk-57-upgrade.md) — shared React 19.2.3 constraints, SDK 57 config migrations, and the optional Linux DevTools warning.
